@@ -6,7 +6,7 @@ import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 export const sleep = ms => new Promise(r => setTimeout(r, ms));
-export const PAGE = pathToFileURL(resolve('v2/index.html')).href;
+export const PAGE = pathToFileURL(resolve('index.html')).href;
 
 export async function launch({ outDir = `${process.env.TEMP}/lyra-shots`, port = 9333 } = {}) {
   const CHROME = process.env.CHROME || 'C:/Program Files/Google/Chrome/Application/chrome.exe';

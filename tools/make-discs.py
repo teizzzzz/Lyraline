@@ -1,5 +1,5 @@
 """
-tools/make-discs.py — 把 v2/assets/img 里的原始唱片图（Top、A–E）处理成网页用的版本，输出到 v2/assets/img/discs/
+tools/make-discs.py — 把 assets/img 里的原始唱片图（Top、A–E）和 logo 处理成网页用的版本：唱片输出到 assets/img/discs/，logo 输出为 assets/img/logo.webp
   · 圆盘：以中心孔（透明区）的质心为圆心裁成正方形，这样旋转轴正好在孔上；找不到孔就用外接框中心
   · 非圆盘（E = WP-7 侧脸）：只裁掉透明边
   · 缩到最长边 1600px，存 WebP（带透明通道）
@@ -12,7 +12,7 @@ from PIL import Image, ImageChops, ImageDraw
 
 sys.stdout.reconfigure(encoding='utf-8')   # Windows 控制台默认 GBK，中文会乱码
 
-SRC = Path('v2/assets/img')
+SRC = Path('assets/img')
 OUT = SRC / 'discs'
 SIZE = 1600          # 输出最长边
 
@@ -24,6 +24,7 @@ JOBS = [
     ('C.png',   'c',   True,  False),
     ('D.png',   'd',   True,  False),
     ('E.png',   'e',   False, False),   # WP-7 侧脸，不是圆盘
+    ('logo.png', '../logo', False, False),   # 白色字标 → assets/img/logo.webp（左上角 / 首页 / 入场动画用）
 ]
 
 
@@ -80,4 +81,4 @@ for src, out, is_round, mask in JOBS:
 
     dst = OUT / f'{out}.webp'
     im.save(dst, 'WEBP', quality=88, method=6)
-    print(f'{src:8s} → {dst.name:9s} {im.width}x{im.height}  {dst.stat().st_size / 1024:.0f} KB  {note}')
+    print(f'{src:8s} → {dst.name:10s} {im.width}x{im.height}  {dst.stat().st_size / 1024:.0f} KB  {note}')

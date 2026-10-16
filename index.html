@@ -7,7 +7,8 @@
 <meta name="description" content="共鳴線 LyraLine — 以原创音乐为核心的多媒体企划">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Noto+Sans+SC:wght@400;700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<!-- 字体：参考 KAMITSUBAKI STUDIO（acumin-pro + 秀英角ゴシック，均为 Adobe Fonts 付费字体）→ 免费替代 Archivo + Zen Kaku Gothic New；简体中文用 Noto Sans SC -->
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Archivo:wght@300;400;500;600;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -18,14 +19,16 @@
   <div class="intro-base"></div>
   <div class="intro-mark">
     <div class="intro-x"></div>
-    <div class="intro-name">共鳴線<small>LyraLine</small></div>
+    <img class="intro-logo" src="assets/img/logo.webp" alt="共鳴線 LyraLine">
     <div class="intro-tip" data-i18n="ui.intro.tip"></div>
   </div>
 </div>
 
-<!-- ===== 角落控件：logo / 语言切换 / 底色切换 / 菜单 ===== -->
+<!-- ===== 左上角 logo：白色字标 + mix-blend-mode: difference，压在深色唱片上是白、压在浅底上是黑 ===== -->
+<a class="site-logo" href="#home"><img src="assets/img/logo.webp" alt="共鳴線 LyraLine"></a>
+
+<!-- ===== 右上角：语言切换 / 底色切换 / 菜单 ===== -->
 <header class="corner">
-  <a class="corner-logo" href="#home">共鳴線<small>LyraLine</small></a>
   <div class="corner-right">
     <div class="lang-switch" role="group" data-i18n-attr="aria-label:ui.lang">
       <button type="button" data-lang="zh" lang="zh-CN">中</button>
@@ -33,7 +36,7 @@
       <button type="button" data-lang="ja" lang="ja">日</button>
     </div>
     <button type="button" class="icon-btn theme-btn" id="themeBtn" data-i18n-attr="aria-label:ui.theme;title:ui.theme"><span class="theme-dot"></span></button>
-    <button type="button" class="icon-btn menu-btn" id="menuBtn" aria-controls="menu" aria-expanded="false" data-i18n-attr="aria-label:ui.menu;title:ui.menu"><span></span><span></span></button>
+    <button type="button" class="icon-btn menu-btn" id="menuBtn" aria-controls="menu" aria-expanded="false" data-i18n-attr="aria-label:ui.menu;title:ui.menu"><span></span><span></span><span></span></button>
   </div>
 </header>
 
@@ -41,7 +44,7 @@
 <nav class="dots" id="dots" aria-label="Pages"></nav>
 
 <!-- 当前位置指示（右下角） -->
-<div class="now" id="now" aria-hidden="true"><span class="now-letter">—</span><span class="now-title">HOME</span></div>
+<div class="now" id="now" aria-hidden="true"><span class="now-letter">01 / 07</span><span class="now-title">HOME</span></div>
 
 <!-- ===== 菜单：快速回归首页目录（列表由 main.js 按 NAV 生成） ===== -->
 <nav class="menu" id="menu" aria-hidden="true">
@@ -60,19 +63,13 @@
 <div class="stage" id="stage">
 <main class="content">
 
-  <!-- 首页：KV & 企划简介 & 目录导航 -->
+  <!-- 首页：KV（logo） -->
   <section class="page page-home" id="home" data-disc="home">
+    <!-- 首页只放 logo（目录由右侧竖排导航 / 转盘 / 菜单承担） -->
     <div class="page-inner">
-      <p class="kicker" data-i18n="home.kicker"></p>
-      <h1 class="home-title">共鳴線<span class="home-latin">LyraLine</span></h1>
-      <p class="home-tagline" data-i18n="site.tagline"></p>
-      <p class="lead" data-i18n="home.intro"></p>
-      <div class="home-dir">
-        <div class="dir-head"><span class="kicker">Index</span><span data-i18n="home.dirTitle"></span></div>
-        <ol class="dir-list" id="homeDir"></ol>
-      </div>
+      <h1 class="home-title"><img class="home-logo" src="assets/img/logo.webp" alt="共鳴線 LyraLine"></h1>
     </div>
-    <div class="scroll-cue"><span class="scroll-arrow"></span><span data-i18n="ui.scroll"></span></div>
+    <div class="scroll-cue"><span>SCROLL DOWN</span><span class="scroll-arrow"></span></div>
   </section>
 
   <!-- A 新闻：① 最新公告 ② 活动情报 -->
@@ -111,12 +108,12 @@
           </div>
         </article>
       </div>
+      <a class="btn-more" href="#news"><span data-i18n="news.more"></span><i class="chev" aria-hidden="true"></i></a>
     </div>
   </section>
 
-  <!-- B 作品：① 音乐 MV ② 专辑（草图：背景为歌曲封面，拉低透明度） -->
+  <!-- B 作品：① 音乐 MV ② 专辑 -->
   <section class="page" id="works" data-disc="works">
-    <div class="page-bg" style="background-image: url('../assets/images/First%20Song%20Cover.JPG')"></div>
     <div class="page-inner">
       <div class="page-head">
         <span class="page-letter">B</span>
@@ -132,7 +129,7 @@
         <div class="ph" data-i18n="works.video"></div>
         <div class="card-list">
           <article class="card track">
-            <div class="track-cover"><img src="../assets/images/First%20Song%20Cover.JPG" alt=""></div>
+            <div class="track-cover"><img src="docs/img/First%20Song%20Cover.JPG" alt=""></div>
             <div class="track-meta"><h3 data-i18n="works.item1.title"></h3><span data-i18n="works.item1.meta"></span></div>
             <span class="tag on" data-i18n="works.status.released"></span>
           </article>
@@ -152,7 +149,6 @@
 
   <!-- C 世界介绍：① 世界观简述 ② 故事背景 ③ 角色立绘 & 设定 -->
   <section class="page" id="world" data-disc="world">
-    <div class="page-bg" style="background-image: url('../assets/images/concept1.JPG')"></div>
     <div class="page-inner">
       <div class="page-head">
         <span class="page-letter">C</span>
@@ -171,7 +167,7 @@
           <p class="muted" data-i18n="world.p2"></p>
         </div>
         <div class="char-card">
-          <img src="../assets/images/WP7FullBodyTransparentBG.png" alt="WP-7">
+          <img src="docs/img/WP7FullBodyTransparentBG.png" alt="WP-7">
           <div class="char-name">WP-7</div>
           <div class="char-role" data-i18n="world.char.role"></div>
           <p class="char-desc" data-i18n="world.char.desc"></p>
@@ -196,12 +192,12 @@
       <p class="lead" data-i18n="members.lead"></p>
       <p class="muted" data-i18n="members.hint" style="margin: 6px 0 18px"></p>
       <div class="member-grid">
-        <div class="card member"><div class="avatar" style="--c: #a89968"></div><h3>Member A</h3><p data-i18n="members.role.compose"></p></div>
-        <div class="card member"><div class="avatar" style="--c: #5f7d63"></div><h3>Member B</h3><p data-i18n="members.role.lyrics"></p></div>
-        <div class="card member"><div class="avatar" style="--c: #4d6f9e"></div><h3>Member C</h3><p data-i18n="members.role.illust"></p></div>
-        <div class="card member"><div class="avatar" style="--c: #b95c4b"></div><h3>Member D</h3><p data-i18n="members.role.video"></p></div>
-        <div class="card member"><div class="avatar" style="--c: #ec7f2b"></div><h3>Member E</h3><p data-i18n="members.role.plan"></p></div>
-        <div class="card member"><div class="avatar" style="--c: #1b1b1b"></div><h3>Member F</h3><p data-i18n="members.role.mix"></p></div>
+        <div class="card member"><div class="avatar" style="--c: var(--c-red)"></div><h3>Member A</h3><p data-i18n="members.role.compose"></p></div>
+        <div class="card member"><div class="avatar" style="--c: var(--c-olive)"></div><h3>Member B</h3><p data-i18n="members.role.lyrics"></p></div>
+        <div class="card member"><div class="avatar" style="--c: var(--c-teal)"></div><h3>Member C</h3><p data-i18n="members.role.illust"></p></div>
+        <div class="card member"><div class="avatar" style="--c: var(--c-lavender)"></div><h3>Member D</h3><p data-i18n="members.role.video"></p></div>
+        <div class="card member"><div class="avatar" style="--c: var(--c-text)"></div><h3>Member E</h3><p data-i18n="members.role.plan"></p></div>
+        <div class="card member"><div class="avatar" style="--c: var(--c-black)"></div><h3>Member F</h3><p data-i18n="members.role.mix"></p></div>
       </div>
       <p class="muted" data-i18n="members.note" style="margin-top: 18px"></p>
     </div>
@@ -221,16 +217,18 @@
       </ol>
       <p class="lead" data-i18n="about.lead"></p>
       <div class="platforms">
-        <a href="https://www.bilibili.com/" target="_blank" rel="noopener"><i></i>Bilibili</a>
-        <a href="https://www.youtube.com/" target="_blank" rel="noopener"><i></i>YouTube</a>
-        <a href="https://x.com/" target="_blank" rel="noopener"><i></i>X / Twitter</a>
+        <a href="https://www.bilibili.com/" target="_blank" rel="noopener">Bilibili<i class="arrow" aria-hidden="true"></i></a>
+        <a href="https://www.youtube.com/" target="_blank" rel="noopener">YouTube<i class="arrow" aria-hidden="true"></i></a>
+        <a href="https://x.com/" target="_blank" rel="noopener">X / Twitter<i class="arrow" aria-hidden="true"></i></a>
       </div>
-      <div class="contact">
-        <h3 data-i18n="about.contactTitle"></h3>
-        <p class="muted" data-i18n="about.contact"></p>
-        <a href="mailto:contact@example.com">contact@example.com</a>
-        <span class="muted" data-i18n="about.emailNote"></span>
-      </div>
+      <!-- 联系方式：黑色通栏（参考 TNK 的表单条） -->
+      <p class="muted contact-note" data-i18n="about.contact"></p>
+      <a class="contact" href="mailto:contact@example.com">
+        <span class="contact-label" data-i18n="about.contactTitle"></span>
+        <span class="contact-mail">contact@example.com</span>
+        <i class="chev" aria-hidden="true"></i>
+      </a>
+      <p class="muted contact-note" data-i18n="about.emailNote"></p>
     </div>
   </section>
 

@@ -22,7 +22,7 @@
   // 唱片：每个板块一张（草图："切换一次目录就换一个唱片"）
   //   img   : tools/make-discs.py 从 assets/img 里的 Top、A–E 裁出来的正方形 WebP；去掉 img 就退回纯色 demo 盘
   //   free  : 不是圆盘（E 是 WP-7 侧脸）→ 不裁圆、不旋转
-  //   scale : free 图相对唱片位的大小（0–1）
+  //   scale : free 图相对唱片位的大小（1 = 和唱片一样大；E 设成 1.15，让侧脸下缘伸出屏幕，不露出图片的裁切边）
   //   color / label / ink / text 只在没有 img 时用（纯色 demo 盘）
   const DISCS = [
     { id: 'home',    img: 'assets/img/discs/top.webp', color: '#1b1b1b', label: '#f2eee4', ink: '#1b1b1b', text: '共鳴線' },
@@ -30,7 +30,7 @@
     { id: 'works',   img: 'assets/img/discs/b.webp',   color: '#a89968', label: '#f6f1e3', ink: '#3a3222', text: 'B · WORKS' },
     { id: 'world',   img: 'assets/img/discs/c.webp',   color: '#5f7d63', label: '#eef3ea', ink: '#1f2f22', text: 'C · WORLD' },
     { id: 'members', img: 'assets/img/discs/d.webp',   color: '#4d6f9e', label: '#eaf0f8', ink: '#182636', text: 'D · MEMBERS' },
-    { id: 'about',   img: 'assets/img/discs/e.webp',   free: true, scale: 0.82,
+    { id: 'about',   img: 'assets/img/discs/e.webp',   free: true, scale: 1.15,
                      color: '#b95c4b', label: '#f9ebe7', ink: '#3a1d17', text: 'E · ABOUT' },
   ];
 
@@ -71,7 +71,6 @@
           : ''}
       </a></li>`).join('');
   }
-  renderNav($('#homeDir'), NAV.filter(n => n.id !== 'home'), false);
   renderNav($('#menuList'), NAV, true);
 
   /* ------------------------------------------------------------------
@@ -99,6 +98,33 @@
   const faces = $$('.disc-face', stage);
   const spinFaces = faces.filter(f => !f.closest('.disc--free'));   // 圆盘：转
   const freeFaces = faces.filter(f => f.closest('.disc--free'));    // 角色图：不转，只跟鼠标视差
+
+  /* ------------------------------------------------------------------
+     转盘目录：NAV 的标题沿唱片圆弧排布，每屏一格（DIAL_STEP 度）
+     整圈的角度 = -(滚动位置 / 一屏高) × 步长，所以翻页、微滚橡皮筋都会带着它转
+     ------------------------------------------------------------------ */
+  const DIAL_STEP = 24;          // 桌面：相邻标题的角度间隔
+  const DIAL_STEP_MOBILE = 34;   // 手机：标题在底部弧上，间隔大一点免得挤
+  const mobileMQ = window.matchMedia('(max-width: 768px)');
+  const dial = document.createElement('div');
+  dial.className = 'dial';
+  dial.innerHTML = NAV.map(n =>
+    `<div class="dial-item" data-slide-id="${n.id}"><span><b>${n.letter || '—'}</b>${n.latin}</span></div>`).join('');
+  stage.appendChild(dial);
+  const dialItems = $$('.dial-item', dial);
+  const dialSpans = dialItems.map(el => el.firstElementChild);
+  const dialStep = () => (mobileMQ.matches ? DIAL_STEP_MOBILE : DIAL_STEP);
+  const dialBase = () => (mobileMQ.matches ? 90 : 0);      // 指针方向：桌面 3 点钟，手机 6 点钟
+  // 排列方向：桌面下一个在指针下方（顺时针 +），手机下一个在指针右边（逆时针 −），整圈转向随之相反；唱片自身的旋转不受影响
+  const dialDir = () => (mobileMQ.matches ? -1 : 1);
+  const dialAngle = i => dialBase() + dialDir() * i * dialStep();
+  function layoutDial() {
+    dialItems.forEach((el, i) => el.style.setProperty('--a', dialAngle(i)));
+    if (!mobileMQ.matches) dialSpans.forEach(sp => { sp.style.transform = ''; });
+  }
+  layoutDial();
+  mobileMQ.addEventListener('change', layoutDial);
+  let dialFocus = -1;
 
   /* ------------------------------------------------------------------
      唱片切换：dir = 1 向下翻，-1 向上翻
@@ -137,17 +163,24 @@
     ? el.scrollTop + el.clientHeight < el.scrollHeight - 1
     : el.scrollTop > 0);
   const titleOf = s => { const n = NAV.find(n => n.id === s.id); return n ? n.latin : (s.dataset.title || s.id.toUpperCase()); };
-  const letterOf = s => { const n = NAV.find(n => n.id === s.id); return n && n.letter ? n.letter : '—'; };
   const slideTop = i => slides[i].offsetTop;
 
   // 右侧页码圆点
   const dots = $('#dots');
   dots.innerHTML = slides.map((s, i) =>
-    `<button type="button" data-slide="${i}" title="${titleOf(s)}" aria-label="${titleOf(s)}"></button>`).join('');
+    `<button type="button" data-slide="${i}" aria-label="${titleOf(s)}"><span>${titleOf(s)}</span></button>`).join('');   // 桌面端竖排文字导航，手机端只显示短线
   const dotEls = $$('button', dots);
   dots.addEventListener('click', e => {
     const b = e.target.closest('[data-slide]');
     if (b) goTo(+b.dataset.slide);
+  });
+  // 转盘标题：点哪个翻到哪个
+  const dialIndex = dialItems.map(el => slides.findIndex(s => s.id === el.dataset.slideId));
+  dial.addEventListener('click', e => {
+    const it = e.target.closest('.dial-item');
+    if (!it) return;
+    const i = dialIndex[dialItems.indexOf(it)];
+    if (i >= 0) goTo(i);
   });
 
   /* ---------- 当前板块追踪：视口中线落在哪个板块 ---------- */
@@ -162,7 +195,8 @@
     slides.forEach(p => p.classList.toggle('is-active', p === page));
     switchDisc(page.dataset.disc, dir);
     $$('[data-nav]').forEach(a => a.classList.toggle('is-current', a.dataset.nav === page.id));
-    nowLetter.textContent = letterOf(page);
+    const pad = n => String(n).padStart(2, '0');
+    nowLetter.textContent = `${pad(slides.indexOf(page) + 1)} / ${pad(slides.length)}`;   // 参考站的 01 / 05 计数
     nowTitle.textContent  = titleOf(page);
   }
   function update() {
@@ -433,6 +467,25 @@
     spinFaces.forEach(f => { f.style.transform = tf; });
     freeFaces.forEach(f => { f.style.transform = move + sc; });
 
+    // 5. 转盘目录：跟着滚动位置转，离指针最近的标题聚焦
+    const pageH = slides.length > 1 ? slideTop(1) : window.innerHeight;
+    const frac = pos / pageH;                                // 连续的"第几屏"
+    const ring = -dialDir() * frac * dialStep();             // 把第 frac 个标题转到指针位置
+    dial.style.transform = `${move} rotate(${ring.toFixed(2)}deg)${sc}`;
+    if (mobileMQ.matches) {                                  // 手机：标题反转回水平
+      dialSpans.forEach((sp, i) => { sp.style.transform = `rotate(${(-(dialAngle(i) + ring)).toFixed(1)}deg)`; });
+    }
+    const nearest = Math.max(0, Math.min(slides.length - 1, Math.round(frac)));
+    if (nearest !== dialFocus) {
+      dialFocus = nearest;
+      dialItems.forEach((el, i) => {
+        const d = Math.abs(dialIndex[i] - nearest);
+        el.classList.toggle('is-focus', d === 0);
+        el.classList.toggle('is-near', d === 1);
+        el.classList.toggle('is-far', d > 1);
+      });
+    }
+
     requestAnimationFrame(tick);
   }
   requestAnimationFrame(tick);
@@ -456,7 +509,6 @@
         el.addEventListener('mouseenter', () => G.to(el, { ...on, duration: 0.35, ease: 'power3.out', overwrite: 'auto' }));
         el.addEventListener('mouseleave', () => G.to(el, { ...off, duration: 0.5, ease: 'power3.out', overwrite: 'auto' }));
       });
-      bind($$('#homeDir a'), { x: 8 }, { x: 0 });
       bind($$('.card'), { y: -3 }, { y: 0 });
       bind($$('.platforms a'), { y: -2 }, { y: 0 });
     }

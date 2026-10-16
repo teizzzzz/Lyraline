@@ -38,6 +38,7 @@ window.LYRA_I18N = (() => {
       'news.item2.title': '官方网站建设中',
       'news.item3.title': '参展信息（占位）',
       'news.item3.desc': '展开后可放活动名、情报相关插图、照片与周边信息。',
+      'news.more': '查看全部新闻',
 
       'works.sub1': '音乐 MV',
       'works.sub2': '专辑',
@@ -118,6 +119,7 @@ window.LYRA_I18N = (() => {
       'news.item2.title': 'Official website under construction',
       'news.item3.title': 'Exhibition info (placeholder)',
       'news.item3.desc': 'Expands to show the event name, related artwork, photos and merch info.',
+      'news.more': 'View all news',
 
       'works.sub1': 'Music videos',
       'works.sub2': 'Albums',
@@ -198,6 +200,7 @@ window.LYRA_I18N = (() => {
       'news.item2.title': '公式サイト制作中',
       'news.item3.title': '出展情報（仮）',
       'news.item3.desc': '展開するとイベント名、関連イラスト、写真、グッズ情報などを表示。',
+      'news.more': 'NEWS一覧を見る',
 
       'works.sub1': 'ミュージックビデオ',
       'works.sub2': 'アルバム',
