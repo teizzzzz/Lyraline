@@ -76,7 +76,7 @@ export async function launch({ outDir = `${process.env.TEMP}/lyra-shots`, port =
   const debug = () => evaluate('JSON.stringify(lyra.debug())');
   const close = () => { ws.close(); chrome.kill(); };
 
-  return { OUT, evaluate, shot, open, go, wheel, key, state, debug, close };
+  return { OUT, send, evaluate, shot, open, go, wheel, key, state, debug, close };
 }
 
 export const DESKTOP = { width: 1440, height: 900, mobile: false };

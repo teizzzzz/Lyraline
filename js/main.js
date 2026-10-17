@@ -54,7 +54,11 @@
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const hoverable = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
   const G = window.gsap || null;                 // GSAP 只用于视差 / hover 微动；没加载到也不影响翻页
-  const skipIntro = new URLSearchParams(location.search).has('nointro');
+  // 入场动画每个会话只播一次：从子页面（news.html 等）回到首页时直接进入
+  const INTRO_KEY = 'lyra.introSeen';
+  let introSeen = false;
+  try { introSeen = sessionStorage.getItem(INTRO_KEY) === '1'; } catch (e) { /* ignore */ }
+  const skipIntro = introSeen || new URLSearchParams(location.search).has('nointro');
   let introRunning = !skipIntro;
 
   /* ------------------------------------------------------------------
@@ -572,6 +576,7 @@
   function openCase() {
     if (!introRunning || intro.classList.contains('is-open')) return;
     intro.classList.add('is-open');
+    try { sessionStorage.setItem(INTRO_KEY, '1'); } catch (e) { /* ignore */ }
     setTimeout(update, 450);                      // 箱盖开到一半时，唱片弹出
     setTimeout(() => {
       intro.classList.add('is-done');

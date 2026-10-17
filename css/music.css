@@ -1,0 +1,159 @@
+/* =====================================================================
+   共鳴線 LyraLine — 音乐作品页（music.html）
+   只写布局 / 尺寸 / transform / 动画 / 显示状态；颜色和字体全部引用 style.css 里的变量
+   （黑胶纹路 / 高光用 color-mix 从 --case / --case-ink 派生，不新增色值）
+   ===================================================================== */
+
+.music {
+  overflow-x: clip;                               /* 唱片滑出不产生横向滚动 */
+  padding: 140px var(--content-right) 0 36px;
+}
+
+/* ---------- 页头：左 MUSIC + 副标题，右 两组统计 ---------- */
+.music-head {
+  display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between;
+  gap: 24px 48px; margin-bottom: clamp(48px, 7vw, 96px);
+}
+.music-head-sub { margin-top: 18px; font-size: 13px; letter-spacing: .2em; color: var(--muted); }
+.music-stats { display: flex; gap: clamp(28px, 4vw, 64px); }
+.music-stats > div { display: flex; flex-direction: row-reverse; align-items: baseline; gap: 10px; }   /* 视觉上 数字在前：09 WORKS */
+.music-stats dd {
+  font-family: var(--font-latin); font-weight: 300; font-variant-numeric: tabular-nums;
+  font-size: clamp(32px, 3.4vw, 52px); line-height: 1; letter-spacing: .02em;
+}
+.music-stats dt { color: var(--ink); }
+
+/* ---------- 专辑网格 ---------- */
+.album-grid {
+  list-style: none;
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: clamp(3rem, 8vw, 7.5rem);           /* 列间距留给滑出的唱片 */
+  row-gap: clamp(56px, 6vw, 88px);
+  padding-bottom: 160px;                          /* 底部进度条浮出时不挡最后一行 */
+}
+@media (max-width: 1080px) { .album-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 760px)  { .album-grid { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---------- 卡片：封面区（唱片 / 封面 / 播放按钮）+ 文字 ---------- */
+.album .art {
+  position: relative; aspect-ratio: 1; cursor: pointer;
+}
+@media (max-width: 760px) { .album .art { width: 72%; } }   /* 单列：给唱片留出滑出空间 */
+
+/* 底层：黑胶（比封面略小，hover / 当前曲目时向右滑出） */
+.album-vinyl {
+  position: absolute; inset: 4%; z-index: 0;
+  transition: transform .8s var(--ease-out);
+}
+.album-vinyl-face {
+  position: absolute; inset: 0; border-radius: 50%;
+  background:
+    conic-gradient(from 30deg,
+      transparent 0 8%, color-mix(in srgb, var(--case-ink) 16%, transparent) 14%, transparent 22%,
+      transparent 58%, color-mix(in srgb, var(--case-ink) 10%, transparent) 64%, transparent 72%),
+    repeating-radial-gradient(circle at 50% 50%,
+      var(--case) 0 2px, color-mix(in srgb, var(--case) 82%, var(--case-ink)) 2px 3px);
+  animation: album-spin 7s linear infinite;
+  animation-play-state: paused;                   /* 暂停时停在原角度，不跳回 0° */
+}
+.album-label {                                    /* 中心贴纸 = 这张专辑的封面 */
+  position: absolute; inset: 32%; border-radius: 50%;
+  background-size: cover; background-position: center;
+  box-shadow: 0 0 0 2px var(--case);
+}
+.album-label::after {                             /* 中心小孔 */
+  content: ''; position: absolute; inset: 45%; border-radius: 50%; background: var(--bg);
+}
+@keyframes album-spin { to { transform: rotate(360deg); } }
+
+/* 中层：封面（默认偏灰） */
+.album-cover {
+  position: absolute; inset: 0; z-index: 1; overflow: hidden;
+  background: var(--bg-2);
+  filter: grayscale(.85);
+  transition: filter .6s var(--ease-out), transform .8s var(--ease-out);
+}
+.album-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* 左下角：圆形播放按钮 */
+.album-play {
+  position: absolute; left: 14px; bottom: 14px; z-index: 2;
+  width: 52px; height: 52px; padding: 0; border: 0; border-radius: 50%;
+  display: grid; place-items: center; cursor: pointer;
+  background: var(--ink); color: var(--bg);
+  box-shadow: 0 0 0 2px var(--bg);               /* 一圈底色描边：封面和按钮同色时也能看清 */
+  transition: transform .35s var(--ease-out), background-color .3s, color .3s;
+}
+.album-play svg { width: 18px; height: 18px; fill: currentColor; }
+.album-play .i-pause { display: none; }
+.album.is-playing .album-play .i-play { display: none; }
+.album.is-playing .album-play .i-pause { display: block; }
+.album-play:hover { transform: scale(1.08); }
+.album.on .album-play { background: var(--accent); color: var(--on-accent); }
+.album-play:focus-visible, .mbar-track:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 3px;
+}
+
+/* 状态：hover → 封面恢复彩色 + 唱片滑出；当前曲目 .on → 唱片保持滑出、封面左让；播放中 → 唱片旋转 */
+.album .art:hover .album-cover, .album.on .album-cover { filter: none; }
+.album .art:hover .album-vinyl, .album.on .album-vinyl { transform: translateX(30%); }
+.album.on .album-cover { transform: translateX(-5%); }
+.album.is-playing .album-vinyl-face { animation-play-state: running; }
+
+/* 文字 */
+.album-meta { position: relative; z-index: 1; margin-top: 18px; }
+.album-no { font-family: var(--font-latin); font-size: 12px; letter-spacing: .12em; color: var(--muted); font-variant-numeric: tabular-nums; }
+.album.on .album-no { color: var(--accent); }
+.album-title {
+  display: flex; align-items: center; gap: 12px; margin-top: 6px;
+  font-size: 17px; font-weight: 700; letter-spacing: .06em; line-height: 1.5;
+}
+.album-type { font-family: var(--font-latin); font-weight: 600; font-size: 13px; letter-spacing: .1em; }
+.album-sep { width: 1px; height: 1em; background: var(--ink); flex: none; }
+.album-en { font-family: var(--font-latin); font-size: 12px; letter-spacing: .08em; color: var(--muted); }
+
+/* =====================================================================
+   底部进度条：默认隐藏；播放中 +（鼠标靠近底部 / 刚开始播放 / 拖动中 / 键盘焦点）才浮出
+   ===================================================================== */
+.mbar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 18px;
+  padding: 40px 36px calc(18px + env(safe-area-inset-bottom, 0px));
+  background: linear-gradient(to bottom, transparent, var(--bg) 62%);
+  transform: translateY(100%); opacity: 0; pointer-events: none;
+  transition: transform .5s var(--ease-out), opacity .4s;
+}
+.mbar.is-playing:is(.is-near, .is-peek, .is-drag, :focus-within) {
+  transform: none; opacity: 1; pointer-events: auto;
+}
+@media (hover: none) {
+  .mbar.is-playing { transform: none; opacity: 1; pointer-events: auto; }   /* 触屏：播放中一直显示 */
+}
+.mbar-time {
+  font-family: var(--font-latin); font-size: 12px; letter-spacing: .08em;
+  font-variant-numeric: tabular-nums; color: var(--muted); min-width: 3.2em;
+}
+.mbar-time:last-child { text-align: right; }
+
+.mbar-track { position: relative; height: 24px; cursor: pointer; touch-action: none; }
+.mbar-rail, .mbar-fill { position: absolute; left: 0; top: 50%; height: 2px; margin-top: -1px; }
+.mbar-rail { right: 0; background: var(--line); }
+.mbar-fill { width: 0; background: var(--ink); }
+.mbar-thumb {
+  position: absolute; top: 50%; left: 0; width: 16px; height: 16px; margin: -8px 0 0 -8px;
+  color: var(--accent);
+  transition: transform .3s var(--ease-out);
+}
+.mbar-thumb svg { width: 100%; height: 100%; fill: currentColor; display: block; }
+.mbar-track:hover .mbar-thumb, .mbar.is-drag .mbar-thumb { transform: scale(1.25) rotate(45deg); }
+
+@media (max-width: 768px) {
+  .music { padding: 96px 20px 0; }
+  .mbar { padding-left: 20px; padding-right: 20px; gap: 12px; }
+}
+
+/* 减少动态效果：不转、不滑 */
+@media (prefers-reduced-motion: reduce) {
+  .album-vinyl-face { animation: none; }
+  .album-vinyl, .album-cover, .album-play, .mbar, .mbar-thumb { transition: none; }   /* 状态照常切换，只是没有过渡 */
+}

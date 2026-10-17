@@ -1,19 +1,24 @@
-# 共鳴線 LyraLine — v2 结构 demo
+# 共鳴線 LyraLine — 官网
 
-按草图重搭的官网结构：**左侧唱片 + 右侧内容列**，滚动切换板块时唱片弹出 / 弹入并换片。
-根目录的 `index.html` 是之前发布的旧版，未改动。
+按草图搭的官网结构：**左侧唱片 + 右侧内容列**，滚动切换板块时唱片弹出 / 弹入并换片。
+新闻 / 作品 / 成员另有独立子页面（`news.html` / `works.html` / `members.html`）。
 
 ## 打开方式
 
-- 直接双击 `v2/index.html`；或在 `dev/` 下 `npx serve .`，访问 `http://localhost:3000/v2/`
-- 调试时在 URL 加 `?nointro` 跳过入场动画，例如 `v2/index.html?nointro#works`
-- 批量截图（桌面 + 手机，各板块 / 菜单 / 深色 / 三语 / 入场动画）：在 `dev/` 下运行 `node tools/shot.mjs`，输出到临时目录，并打印页面 JS 报错
+- 直接双击 `index.html`；或在项目根目录 `npx serve .`，访问 `http://localhost:3000/`
+- 入场动画每个浏览器会话只播一次（从子页面回首页不重播）；调试时在 URL 加 `?nointro` 跳过，例如 `index.html?nointro#works`
+- 批量截图（桌面 + 手机，各板块 / 菜单 / 深色 / 三语 / 入场动画）：在项目根目录运行 `node tools/shot.mjs`（Mac 上需设 `CHROME="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" TEMP=<输出目录>`），输出到临时目录，并打印页面 JS 报错
 
 ## 文件
 
 | 文件 | 内容 |
 | --- | --- |
 | `index.html` | 页面骨架：入场动画 / 角落控件 / 菜单 / 唱片舞台 / 首页 + A–E 五个板块 / 尾页 |
+| `news.html` / `works.html` / `members.html` | 子页面：新闻一览・详情 / 作品一览・详情 / 成员（普通滚动，无唱片） |
+| `js/data.js` | **新闻 / 作品 / 成员的内容数据**（首页和子页共用，加内容只改这里） |
+| `js/render.js` | 按 data.js 渲染首页 A / B / D 列表和子页内容 |
+| `js/sub.js` | 子页面的底色 / 语言 / 菜单 / 筛选 / 详情逻辑 |
+| `music.html` + `css/music.css` + `js/music.js` | 音乐作品页：专辑网格（黑胶滑出 / 旋转）+ 底部进度条，从作品页左栏「试听全部作品」进入 |
 | `css/style.css` | 布局、唱片弹入弹出动画、浅色 / 深色两套底色、手机端适配 |
 | `js/i18n.js` | 中 / EN / 日 三语词典与切换逻辑 |
 | `js/main.js` | 目录与唱片配置（`NAV` / `DISCS`）、滚动追踪、唱片切换、菜单、底色、入场动画 |
@@ -70,8 +75,8 @@ E 关于我们  ① 各平台账号 ② 联系方式
 
 ## 唱片图
 
-原图放在 `v2/assets/img/`（`Top.png`、`A.PNG`、`B–E.png`，透明底），网页不直接用原图，而是用
-`python tools/make-discs.py`（在 `dev/` 下运行，需要 Pillow）生成的 `v2/assets/img/discs/*.webp`：
+原图放在 `assets/img/`（`Top.png`、`A.PNG`、`B–E.png`，透明底），网页不直接用原图，而是用
+`python tools/make-discs.py`（在项目根目录运行，需要 Pillow）生成的 `assets/img/discs/*.webp`：
 
 - 圆盘（Top、A–D）以中心孔为圆心裁成正方形，旋转轴才会正好落在孔上；A 顺便用圆形蒙版去掉盘外毛边
 - E 是 WP-7 侧脸，不是圆盘，只裁掉透明边
@@ -81,12 +86,12 @@ E 关于我们  ① 各平台账号 ② 联系方式
 
 | 字段 | 作用 |
 | --- | --- |
-| `img` | 图片路径（相对于 `v2/`）。去掉这个字段就退回纯色 demo 盘 |
+| `img` | 图片路径（相对于项目根目录）。去掉这个字段就退回纯色 demo 盘 |
 | `free: true` | 不是圆盘：不裁圆、不旋转（E 用） |
 | `scale` | `free` 图相对唱片位的大小，0–1 |
 | `color` / `label` / `ink` / `text` | 只在没有 `img` 时用 |
 
-`assets/img/logo.png` 目前还没有用上。
+左上角 / 首页 / 入场动画的 logo 用的是 `make-discs.py` 生成的 `assets/img/logo.webp`。
 
 ## 加一个板块（例如草图 PS 里的「美术馆」）
 
@@ -97,4 +102,26 @@ E 关于我们  ① 各平台账号 ② 联系方式
 ## 文案
 
 `data-i18n="key"` 从词典取文字，`data-i18n-html` 允许带标签，`data-i18n-attr="aria-label:key"` 翻译属性。
-当前文案来自 `docs/LyraLine_Website_Content.md`，新闻 / 作品 / 成员部分是占位。
+当前文案来自 `docs/LyraLine_Website_Content.md`。
+
+## 音乐作品页（`music.html`）
+
+- 数据在 `js/music.js` 顶部的 `MUSIC` 数组：`{ id, type: 'EP'|'Single'|'OST', musicName, musicNameEn, duration(秒), musicUrl, cover }`，目前是 9 条原创示例
+  - `musicUrl` 留空 → Web Audio 合成环境音演示；`cover` 留空 → canvas 按 id 生成抽象占位封面（每次一样）
+- 接后端：`lyraMusic.musicRender(list)` 重新渲染，`lyraMusic.changeMusicDetail(i, { autoplay })` 切歌
+- 播放引擎统一接口 `play / pause / seek / stop / onend` + `currentTime / duration`（`audioEngine` / `synthEngine`）
+- `music.html#t3` 直接定位到 id 为 3 的专辑；空格播放 / 暂停，进度条获得焦点后 ← → 快退 / 快进 5 秒
+- 底部进度条只在播放中、且鼠标靠近底部 / 刚开始播放 2.2 秒 / 拖动中 / 键盘焦点时浮出；触屏上播放中一直显示
+
+## 新闻 / 作品 / 成员（`js/data.js`）
+
+三个数组，**新的写在最前面**。文字字段写成 `{ zh, en, ja }` 三语对象（缺的语言回退到 日 → 中 → 英），三语相同的直接写字符串。
+
+- **新闻** `news`：`id`（网址 `news.html?id=xxx`）、`date`、`tag`（`notice` / `release` / `event`）、`title`、`summary`（可选）、`body`（可带 `<p>`）、`image`（可选）、`link`（可选）
+- **作品** `works`：`id`、`no`、`type`（`mv` / `album` / `teaser`）、`status`（`released` / `wip`）、`date`、`title`、`kicker`、`cover`、`line`、
+  `bilibili`（BV 号）/ `youtube`（视频 id）→ 详情页嵌入播放器，两个都填可切换；`credits: [{ role, name }]`、`tracks`（专辑曲目）、`note`（创作手记，可折叠）
+- **成员** `members`：`id`（`members.html#id` 定位）、`name`、`group`（`music` / `lyrics` / `art` / `production`）、`roles`、`color` 或 `avatar`、`bio`、`works`、`links`
+
+`role` 的取值见 `js/i18n.js` 里的 `role.*`（compose / arrange / lyrics / vocal / illust / chara / video / mix / plan），要加新工种就在三种语言里各加一条。
+首页显示前 3 条新闻、前 3 个作品、前 6 位成员。
+目前新闻日期、MV 链接、制作人员和成员（shuuyakikou 以外）都是占位。

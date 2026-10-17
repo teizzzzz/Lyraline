@@ -84,31 +84,9 @@
         <li data-i18n="news.sub1"></li>
         <li data-i18n="news.sub2"></li>
       </ol>
-      <div class="card-list">
-        <article class="card row">
-          <time class="card-date">2025.xx.xx</time>
-          <div>
-            <h3 data-i18n="news.item1.title"></h3>
-            <span class="tag on" data-i18n="news.tag.notice"></span>
-          </div>
-        </article>
-        <article class="card row">
-          <time class="card-date">2025.xx.xx</time>
-          <div>
-            <h3 data-i18n="news.item2.title"></h3>
-            <span class="tag" data-i18n="news.tag.notice"></span>
-          </div>
-        </article>
-        <article class="card row">
-          <time class="card-date">2025.xx.xx</time>
-          <div>
-            <h3 data-i18n="news.item3.title"></h3>
-            <span class="tag" data-i18n="news.tag.event"></span>
-            <p class="muted" data-i18n="news.item3.desc"></p>
-          </div>
-        </article>
-      </div>
-      <a class="btn-more" href="#news"><span data-i18n="news.more"></span><i class="chev" aria-hidden="true"></i></a>
+      <!-- 最新 3 条，内容在 js/data.js -->
+      <div class="card-list" id="homeNews"></div>
+      <a class="btn-more" href="news.html"><span data-i18n="news.more"></span><i class="chev" aria-hidden="true"></i></a>
     </div>
   </section>
 
@@ -126,24 +104,10 @@
       </ol>
       <p class="lead" data-i18n="works.lead"></p>
       <div class="works-grid">
-        <div class="ph" data-i18n="works.video"></div>
-        <div class="card-list">
-          <article class="card track">
-            <div class="track-cover"><img src="docs/img/First%20Song%20Cover.JPG" alt=""></div>
-            <div class="track-meta"><h3 data-i18n="works.item1.title"></h3><span data-i18n="works.item1.meta"></span></div>
-            <span class="tag on" data-i18n="works.status.released"></span>
-          </article>
-          <article class="card track">
-            <div class="track-cover"></div>
-            <div class="track-meta"><h3 data-i18n="works.next"></h3><span data-i18n="works.nextDesc"></span></div>
-            <span class="tag" data-i18n="works.status.wip"></span>
-          </article>
-          <article class="card track">
-            <div class="track-cover"></div>
-            <div class="track-meta"><h3 data-i18n="works.album"></h3><span data-i18n="works.albumDesc"></span></div>
-          </article>
-        </div>
+        <!-- 最新 3 个作品，内容在 js/data.js -->
+        <div class="card-list" id="homeWorks"></div>
       </div>
+      <a class="btn-more" href="works.html"><span data-i18n="works.more"></span><i class="chev" aria-hidden="true"></i></a>
     </div>
   </section>
 
@@ -189,17 +153,11 @@
         <li data-i18n="members.sub2"></li>
         <li data-i18n="members.sub3"></li>
       </ol>
-      <p class="lead" data-i18n="members.lead"></p>
-      <p class="muted" data-i18n="members.hint" style="margin: 6px 0 18px"></p>
-      <div class="member-grid">
-        <div class="card member"><div class="avatar" style="--c: var(--c-red)"></div><h3>Member A</h3><p data-i18n="members.role.compose"></p></div>
-        <div class="card member"><div class="avatar" style="--c: var(--c-olive)"></div><h3>Member B</h3><p data-i18n="members.role.lyrics"></p></div>
-        <div class="card member"><div class="avatar" style="--c: var(--c-teal)"></div><h3>Member C</h3><p data-i18n="members.role.illust"></p></div>
-        <div class="card member"><div class="avatar" style="--c: var(--c-lavender)"></div><h3>Member D</h3><p data-i18n="members.role.video"></p></div>
-        <div class="card member"><div class="avatar" style="--c: var(--c-text)"></div><h3>Member E</h3><p data-i18n="members.role.plan"></p></div>
-        <div class="card member"><div class="avatar" style="--c: var(--c-black)"></div><h3>Member F</h3><p data-i18n="members.role.mix"></p></div>
-      </div>
+      <p class="lead" data-i18n="members.lead" style="margin-bottom: 18px"></p>
+      <!-- 成员内容在 js/data.js -->
+      <div class="member-grid" id="homeMembers"></div>
       <p class="muted" data-i18n="members.note" style="margin-top: 18px"></p>
+      <a class="btn-more" href="members.html"><span data-i18n="members.more"></span><i class="chev" aria-hidden="true"></i></a>
     </div>
   </section>
 
@@ -249,6 +207,8 @@
 <!-- GSAP：翻页缓动 / 回弹 / 视差 / hover 微动。加载失败时 main.js 会退回纯 JS 缓动 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
 <script src="js/i18n.js"></script>
+<script src="js/data.js"></script>
+<script src="js/render.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>

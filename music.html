@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light" class="is-sub">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>MUSIC | 共鳴線 LyraLine</title>
+<meta name="description" content="共鳴線 LyraLine — 音乐作品试听">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Archivo:wght@300;400;500;600;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/music.css">
+</head>
+<body data-page="music">
+
+<a class="site-logo" href="index.html"><img src="assets/img/logo.webp" alt="共鳴線 LyraLine"></a>
+
+<header class="corner">
+  <div class="corner-right">
+    <div class="lang-switch" role="group" data-i18n-attr="aria-label:ui.lang">
+      <button type="button" data-lang="zh" lang="zh-CN">中</button>
+      <button type="button" data-lang="en" lang="en">EN</button>
+      <button type="button" data-lang="ja" lang="ja">日</button>
+    </div>
+    <button type="button" class="icon-btn theme-btn" id="themeBtn" data-i18n-attr="aria-label:ui.theme;title:ui.theme"><span class="theme-dot"></span></button>
+    <button type="button" class="icon-btn menu-btn" id="menuBtn" aria-controls="menu" aria-expanded="false" data-i18n-attr="aria-label:ui.menu;title:ui.menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<nav class="menu" id="menu" aria-hidden="true">
+  <div class="menu-inner">
+    <div class="menu-head"><span class="kicker">Index</span><span data-i18n="home.dirTitle"></span></div>
+    <ol class="dir-list" id="menuList"></ol>
+    <div class="menu-foot" data-i18n="site.tagline"></div>
+  </div>
+</nav>
+
+<!-- ===== 音乐作品：页头 + 专辑网格（js/music.js 渲染）+ 底部进度条 =====
+     外层 overflow-x: clip：最右一列的唱片滑出时不产生横向滚动 -->
+<div class="music">
+  <header class="music-head">
+    <div class="music-head-title">
+      <h1 class="page-title">MUSIC</h1>
+      <p class="music-head-sub" data-i18n="music.sub"></p>
+    </div>
+    <dl class="music-stats">
+      <div><dt class="kicker">WORKS</dt><dd id="statCount">00</dd></div>
+      <div><dt class="kicker">TOTAL</dt><dd id="statTotal">0:00</dd></div>
+    </dl>
+  </header>
+
+  <ol class="album-grid" id="albumGrid"></ol>
+</div>
+
+<footer class="sub-foot">
+  <a href="index.html" class="sub-foot-logo"><img src="assets/img/logo.webp" alt="共鳴線 LyraLine"></a>
+  <p data-i18n="site.tagline"></p>
+  <p class="footer-copy" data-i18n="footer.copy"></p>
+</footer>
+
+<!-- ===== 底部进度条（页面上唯一的播放控件）：播放中 + 鼠标靠近底部 / 刚开始播放 / 拖动中 / 键盘焦点时浮出 ===== -->
+<div class="mbar" id="mbar">
+  <span class="mbar-time" id="mbarCur">0:00</span>
+  <div class="mbar-track" id="mbarTrack" role="slider" tabindex="0"
+       aria-valuemin="0" aria-valuemax="0" aria-valuenow="0" aria-valuetext="0:00" data-i18n-attr="aria-label:music.seek">
+    <span class="mbar-rail"></span>
+    <span class="mbar-fill" id="mbarFill"></span>
+    <span class="mbar-thumb" id="mbarThumb" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M12 0C12.9 7.6 16.4 11.1 24 12 16.4 12.9 12.9 16.4 12 24 11.1 16.4 7.6 12.9 0 12 7.6 11.1 11.1 7.6 12 0Z"/></svg>
+    </span>
+  </div>
+  <span class="mbar-time" id="mbarDur">0:00</span>
+</div>
+
+<script src="js/i18n.js"></script>
+<script src="js/data.js"></script>
+<script src="js/render.js"></script>
+<script src="js/music.js"></script>
+<script src="js/sub.js"></script>
+</body>
+</html>
