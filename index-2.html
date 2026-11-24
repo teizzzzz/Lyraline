@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ja" data-theme="light" data-case-mode="v3">
+
+<!-- Mirrored from https://wavepicker.com/index.html by HTTrack Website Copier/3.x [XR&CO], Wed, 18 Nov 2026 15:18:28 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>共鳴線 LyraLine</title>
+<meta name="description" content="共鳴線 LyraLine — 以原创音乐为核心的多媒体企划">
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+<!-- 字体：参考 KAMITSUBAKI STUDIO（acumin-pro + 秀英角ゴシック，均为 Adobe Fonts 付费字体）→ 免费替代 Archivo + Zen Kaku Gothic New；简体中文用 Noto Sans SC -->
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&amp;family=Archivo:wght@300;400;500;600;800&amp;family=Zen+Kaku+Gothic+New:wght@400;500;700&amp;family=Noto+Sans+SC:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<!-- Swiper 6.8.4（与 pndr.thinkr.jp 同版本，本地化以便离线/GitHub Pages 使用） -->
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ===== 入场动画：打开 WP-7 的手提箱（点击后交叉绑带向两侧解开） ===== -->
+<div class="intro" id="intro" aria-hidden="true">
+  <div class="intro-lid"></div>
+  <div class="intro-base"></div>
+  <div class="intro-case case-v1">
+    <div class="case-half l"><img src="docs/img/case/closed.png" alt=""></div>
+    <div class="case-half r"><img src="docs/img/case/closed.png" alt=""></div>
+  </div>
+  <!-- 新版：先解开绑带（交叉 → 竖直），再沿左侧铰链把箱盖翻开 -->
+  <div class="intro-case case-v2" aria-hidden="true">
+    <div class="case-inner"><img class="case-reveal" src="docs/img/case/char.png" alt=""></div>
+    <div class="case-front">
+      <img class="strap-img strap-closed" src="docs/img/case/closed.png" alt="">
+      <img class="strap-img strap-open" src="docs/img/case/open.png" alt="">
+    </div>
+  </div>
+  <!-- v3 默认：MG 转场式残影划开（case4.jpg 向下划走，多层错开拖影 + 弹性）；v1/v2 保留 -->
+  <div class="intro-case case-v3" aria-hidden="true">
+    <div class="wipe-layer w5"></div>
+    <div class="wipe-layer w4"></div>
+    <div class="wipe-layer w3"></div>
+    <div class="wipe-layer w2"></div>
+    <div class="wipe-layer w1"></div>
+    <img class="wipe-layer w-main" src="docs/img/case/case4.jpg" alt="">
+  </div>
+  <div class="intro-mark">
+    <div class="intro-tip">Click to open the case</div>
+  </div>
+</div>
+
+<!-- ===== 左上角 logo：白色字标 + mix-blend-mode: difference，压在深色唱片上是白、压在浅底上是黑 ===== -->
+<a class="site-logo" href="#home"><img src="assets/img/logo.webp" alt="共鳴線 LyraLine"></a>
+
+<!-- ===== 右上角：语言切换 / 底色切换 / 菜单 ===== -->
+<header class="corner">
+  <div class="corner-right">
+    <div class="lang-switch" role="group" data-i18n-attr="aria-label:ui.lang">
+      <button type="button" data-lang="ja" lang="ja">日</button>
+      <button type="button" data-lang="zh" lang="zh-CN">中</button>
+      <button type="button" data-lang="en" lang="en">EN</button>
+    </div>
+    <button type="button" class="icon-btn theme-btn" id="themeBtn" data-i18n-attr="aria-label:ui.theme;title:ui.theme"><span class="theme-dot"></span></button>
+    <button type="button" class="icon-btn menu-btn" id="menuBtn" aria-controls="menu" aria-expanded="false" data-i18n-attr="aria-label:ui.menu;title:ui.menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<!-- 右侧页码圆点（由 main.js 按板块生成） -->
+<nav class="dots" id="dots" aria-label="Pages"></nav>
+
+<!-- 当前位置指示（右下角） -->
+<div class="now" id="now" aria-hidden="true"><span class="now-letter">01 / 07</span><span class="now-title">HOME</span></div>
+
+<!-- ===== 菜单：快速回归首页目录（列表由 main.js 按 NAV 生成） ===== -->
+<nav class="menu" id="menu" aria-hidden="true">
+  <div class="menu-inner">
+    <div class="menu-head"><span class="kicker">Index</span><span data-i18n="home.dirTitle"></span></div>
+    <ol class="dir-list" id="menuList"></ol>
+    <div class="menu-foot" data-i18n="site.tagline"></div>
+  </div>
+</nav>
+
+<!-- ===== 左：唱片舞台（唱片由 main.js 按 DISCS 配置注入） ===== -->
+<div class="disc-stage" id="discStage" aria-hidden="true"></div>
+
+<!-- ===== 右：内容列。每个 .page 占满一屏；内容超出一屏时在 .page-inner 里滚 =====
+     #stage 包住 main + footer，翻到头时的回弹、鼠标悬停视差都作用在它上面 -->
+<div class="stage" id="stage">
+<main class="content">
+
+  <!-- 首页：KV（logo） -->
+  <section class="page page-home" id="home" data-disc="home">
+    <!-- 首页只放 logo（目录由右侧竖排导航 / 转盘 / 菜单承担） -->
+    <div class="page-inner">
+      <h1 class="home-title"><img class="home-logo" src="assets/img/logo.webp" alt="共鳴線 LyraLine"></h1>
+    </div>
+    <div class="scroll-cue"><span>SCROLL DOWN</span><span class="scroll-arrow"></span></div>
+  </section>
+
+  <!-- A 新闻：① 最新公告 ② 活动情报 -->
+  <section class="page" id="news" data-disc="news">
+    <div class="page-inner">
+      <div class="page-head">
+        <span class="page-letter">A</span>
+        <h2 class="page-title">NEWS</h2>
+        <span class="page-local" data-i18n="nav.news"></span>
+      </div>
+      <ol class="subnav">
+        <li data-i18n="news.sub1"></li>
+        <li data-i18n="news.sub2"></li>
+      </ol>
+      <!-- 最新 3 条，内容在 js/data.js -->
+      <div class="card-list" id="homeNews"></div>
+      <a class="btn-more" href="news.html"><span data-i18n="news.more"></span><i class="chev" aria-hidden="true"></i></a>
+    </div>
+  </section>
+
+  <!-- B 作品：① 音乐 MV ② 专辑 -->
+  <section class="page" id="works" data-disc="works">
+    <div class="page-inner">
+      <div class="page-head">
+        <span class="page-letter">B</span>
+        <h2 class="page-title">WORKS</h2>
+        <span class="page-local" data-i18n="nav.works"></span>
+      </div>
+      <ol class="subnav">
+        <li data-i18n="works.nav1"></li>
+        <li data-i18n="works.nav2"></li>
+        <li data-i18n="works.nav3"></li>
+        <li data-i18n="works.nav4"></li>
+        <li data-i18n="works.nav5"></li>
+      </ol>
+      <p class="lead" data-i18n="works.lead"></p>
+      <div class="works-grid">
+        <!-- 最新 3 个作品，内容在 js/data.js -->
+        <div class="card-list" id="homeWorks"></div>
+      </div>
+      <a class="btn-more" href="works.html"><span data-i18n="works.more"></span><i class="chev" aria-hidden="true"></i></a>
+    </div>
+  </section>
+
+  <!-- C 世界介绍：① 世界观简述 ② 故事背景 ③ 角色立绘 & 设定 -->
+  <section class="page" id="world" data-disc="world">
+    <div class="page-inner">
+      <div class="page-head">
+        <span class="page-letter">C</span>
+        <h2 class="page-title">WORLD</h2>
+        <span class="page-local" data-i18n="nav.world"></span>
+      </div>
+      <ol class="subnav">
+        <li data-i18n="world.sub1"></li>
+        <li data-i18n="world.sub2"></li>
+        <li data-i18n="world.sub3"></li>
+      </ol>
+      <div class="world-grid">
+        <div class="world-text">
+          <p class="lead" data-i18n="world.lead"></p>
+          <p class="muted" data-i18n="world.p1"></p>
+          <p class="muted" data-i18n="world.p2"></p>
+        </div>
+        <div class="char-card">
+          <img src="docs/img/WP7FullBodyTransparentBG.png" alt="WP-7">
+          <div class="char-name">WP-7</div>
+          <div class="char-role" data-i18n="world.char.role"></div>
+          <p class="char-desc" data-i18n="world.char.desc"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- D 成员构成：① 音乐 ② 作词 ③ 美术 -->
+  <section class="page" id="members" data-disc="members">
+    <div class="page-inner">
+      <div class="page-head">
+        <span class="page-letter">D</span>
+        <h2 class="page-title">MEMBERS</h2>
+        <span class="page-local" data-i18n="nav.members"></span>
+      </div>
+      <ol class="subnav">
+        <li data-i18n="members.sub1"></li>
+        <li data-i18n="members.sub2"></li>
+        <li data-i18n="members.sub3"></li>
+      </ol>
+      <p class="lead" data-i18n="members.lead" style="margin-bottom: 18px"></p>
+      <!-- 成员内容在 js/data.js -->
+      <div class="member-grid" id="homeMembers"></div>
+      <p class="muted" data-i18n="members.note" style="margin-top: 18px"></p>
+      <a class="btn-more" href="members.html"><span data-i18n="members.more"></span><i class="chev" aria-hidden="true"></i></a>
+    </div>
+  </section>
+
+  <!-- E 关于我们：① 各平台账号 ② 联系方式 -->
+  <section class="page" id="about" data-disc="about">
+    <div class="page-inner">
+      <div class="page-head">
+        <span class="page-letter">E</span>
+        <h2 class="page-title">ABOUT</h2>
+        <span class="page-local" data-i18n="nav.about"></span>
+      </div>
+      <ol class="subnav">
+        <li data-i18n="about.sub1"></li>
+        <li data-i18n="about.sub2"></li>
+      </ol>
+      <p class="lead" data-i18n="about.lead"></p>
+      <div class="platforms">
+        <a href="https://youtube.com/@lyraline?si=vnrV5BG9D0iTu6MI" target="_blank" rel="noopener">YouTube<i class="arrow" aria-hidden="true"></i></a>
+        <a href="https://b23.tv/aD6bjFb" target="_blank" rel="noopener">Bilibili<i class="arrow" aria-hidden="true"></i></a>
+        <a href="https://x.com/lyralinejp?s=11&t=AWsvZPfIECZy5myoeTHxxg" target="_blank" rel="noopener">X / Twitter<i class="arrow" aria-hidden="true"></i></a>
+      </div>
+      <!-- 联系方式：黑色通栏（参考 TNK 的表单条） -->
+      <p class="muted contact-note" data-i18n="about.contact"></p>
+      <a class="contact" href="mailto:lyralinewp7@gmail.com">
+        <span class="contact-label" data-i18n="about.contactTitle"></span>
+        <span class="contact-mail">lyralinewp7@gmail.com</span>
+        <i class="chev" aria-hidden="true"></i>
+      </a>
+      <p class="muted contact-note" data-i18n="about.emailNote"></p>
+    </div>
+  </section>
+
+  <!-- F 企划书 Pitch Deck：网页内可翻页幻灯片（不提供下载） -->
+  <section class="page page-deck" id="deck" data-disc="deck">
+    <div class="page-inner deck-inner">
+      <div class="page-head">
+        <span class="page-letter">F</span>
+        <h2 class="page-title">DECK</h2>
+        <span class="page-local" data-i18n="nav.deck"></span>
+      </div>
+      <div class="deck-viewport">
+        <div class="deck-track"></div>
+      </div>
+      <div class="deck-controls">
+        <div class="deck-nav">
+          <button type="button" class="prev" aria-label="Previous"><i class="chev left" aria-hidden="true"></i></button>
+          <button type="button" class="next" aria-label="Next"><i class="chev" aria-hidden="true"></i></button>
+        </div>
+        <div class="deck-dots"></div>
+        <div class="deck-count"><span class="cur">01</span><span class="sep">/</span><span class="total">17</span></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ===== 尾页：合上手提箱（绑带合入，参考 shiyonglizi.jpg） ===== -->
+<footer class="footer" id="thanks" data-disc="none" data-title="THANKS">
+  <div class="case-straps case-v1" aria-hidden="true">
+    <img class="case-strap l" src="docs/img/case/open.png" alt="">
+    <img class="case-strap r" src="docs/img/case/open.png" alt="">
+  </div>
+  <!-- 新版：箱盖沿左侧铰链合上，最后绑带重新扣回交叉状态 -->
+  <div class="case-footer-v2" aria-hidden="true">
+    <div class="case-lid">
+      <img class="strap-img strap-open" src="docs/img/case/open.png" alt="">
+      <img class="strap-img strap-closed" src="docs/img/case/closed.png" alt="">
+    </div>
+  </div>
+  <!-- v3：与开场相反，case4.jpg 带残影从下往上划入合箱（旧版 v1/v2 代码保留） -->
+  <div class="case-footer-v3" aria-hidden="true">
+    <div class="wipe-layer w5"></div>
+    <div class="wipe-layer w4"></div>
+    <div class="wipe-layer w3"></div>
+    <div class="wipe-layer w2"></div>
+    <div class="wipe-layer w1"></div>
+    <img class="wipe-layer w-main" src="docs/img/case/case4.jpg" alt="">
+  </div>
+  <span class="kicker" data-i18n="footer.close"></span>
+  <div class="case-scene">
+    <img class="case-banner" src="docs/img/case/thanks.png" alt="Thanks!">
+    <img class="case-character" src="docs/img/case/char.png" alt="">
+  </div>
+  <p class="footer-line" data-i18n="footer.line"></p>
+  <p class="footer-copy" data-i18n="footer.copy"></p>
+  <a class="footer-top" href="#home" data-i18n="footer.top"></a>
+</footer>
+</div>
+
+<!-- GSAP：翻页缓动 / 回弹 / 视差 / hover 微动。加载失败时 main.js 会退回纯 JS 缓动 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/data.js"></script>
+<script src="js/render.js"></script>
+<script src="js/deck.js"></script>
+<script src="js/deck-render.js"></script>
+<script src="js/main.js"></script>
+</body>
+
+<!-- Mirrored from https://wavepicker.com/index.html by HTTrack Website Copier/3.x [XR&CO], Wed, 18 Nov 2026 15:18:28 GMT -->
+</html>
