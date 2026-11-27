@@ -1,7 +1,10 @@
 /* =====================================================================
    共鳴線 LyraLine — 音乐作品页（music.html）
-   数据 → 封面（缺图时 canvas 生成）→ 播放引擎（Audio / Web Audio 合成）
-   → musicRender() 渲染网格 → changeMusicDetail() 切歌 → 底部进度条 → 键盘 / hash 路由
+   曲名采用术语表（shuyubiao）专有名词；试听分三类：
+     mode 'links'   → 点击试听弹出官方链接（绿浮游 / 聆听者）
+     mode 'file'    → 点击试听播放 songpreview 预览文件
+     mode 'none'    → 无试听按钮（Aftertones EP）
+     mode 'unknown' → 试听位置显示 ??? 占位（尚无素材的曲目）
    ===================================================================== */
 (() => {
   'use strict';
@@ -9,121 +12,164 @@
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
   const I18N = window.LYRA_I18N;
   const t = k => I18N.t(k);
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
 
   /* ------------------------------------------------------------------
-     数据（原创示例；之后换成接口返回，结构保持一致即可）
-       type      : 'EP' | 'Single' | 'OST'
-       duration  : 秒
-       musicUrl  : 音频地址；留空 → 用 Web Audio 合成一段环境音演示
-       cover     : 封面地址；留空 → canvas 生成抽象占位封面
+     曲目数据：曲名三语均为术语表专有名词
+       name     : { zh, en, ja } 三语专有名词
+       mode     : 'none' | 'links' | 'file' | 'unknown'
+       links    : [{ label, url }]   （mode=links）
+       musicUrl : 本地预览音频        （mode=file）
+       duration : 秒；无素材显示 ???
+       cover    : 封面图；留空 → canvas 生成抽象占位封面
      ------------------------------------------------------------------ */
   let MUSIC = [
-    { id: 1, type: 'EP',     musicName: '盛夏未央',   musicNameEn: 'Midsummer, Unfinished',   duration: 94,  musicUrl: '', cover: '' },
-    { id: 2, type: 'Single', musicName: '雨后的天线', musicNameEn: 'Antenna After the Rain',  duration: 112, musicUrl: '', cover: '' },
-    { id: 3, type: 'OST',    musicName: '旧城回声',   musicNameEn: 'Echoes of the Old Town',  duration: 128, musicUrl: '', cover: '' },
-    { id: 4, type: 'Single', musicName: '无人站台',   musicNameEn: 'Empty Platform',          duration: 86,  musicUrl: '', cover: '' },
-    { id: 5, type: 'EP',     musicName: '风化的磁带', musicNameEn: 'Weathered Tape',          duration: 140, musicUrl: '', cover: '' },
-    { id: 6, type: 'OST',    musicName: '铁轨与萤火', musicNameEn: 'Rails and Fireflies',     duration: 102, musicUrl: '', cover: '' },
-    { id: 7, type: 'Single', musicName: '黄昏信号',   musicNameEn: 'Dusk Signal',             duration: 118, musicUrl: '', cover: '' },
-    { id: 8, type: 'EP',     musicName: '漂流电台',   musicNameEn: 'Drifting Radio',          duration: 96,  musicUrl: '', cover: '' },
-    { id: 9, type: 'OST',    musicName: '星屑储藏室', musicNameEn: 'Stardust Storeroom',      duration: 121, musicUrl: '', cover: '' },
+    { id: 1, type: 'EP', mode: 'none',
+      name: { zh: 'Aftertones', en: 'Aftertones', ja: 'Aftertones' },
+      duration: null, cover: 'docs/img/aftertones-cover.jpg' },
+
+    { id: 2, type: 'Single', mode: 'links',
+      name: { zh: '绿浮游 (feat. 初音ミク, ナースロボ_タイプT)', en: 'Verdant Ephemera (feat. Hatsune Miku, Nourse Robot Type T)', ja: '緑浮遊 (feat. 初音ミク, ナースロボ_タイプT)' },
+      duration: 207, cover: 'docs/img/First%20Song%20Cover.JPG',
+      links: [
+        { label: 'YouTube', url: 'https://youtu.be/x-2Lpzkx7uc?si=HkxZE9Q59WfqvkXS' },
+        { label: 'Bilibili', url: 'https://b23.tv/Sfzdi0V' },
+      ] },
+
+    { id: 3, type: 'Single', mode: 'links',
+      name: { zh: '绿浮游【人声本家】', en: 'Verdant Ephemera (feat. 常夜謠)', ja: '緑浮遊(feat. 常夜謠)' },
+      duration: 207, cover: 'docs/img/First%20Song%20Cover.JPG',
+      links: [
+        { label: 'YouTube', url: 'https://youtu.be/EhFRDMh0iCk?si=WdJjCPkv2CrM_ANd' },
+        { label: 'Bilibili', url: 'https://b23.tv/k4NLYHs' },
+      ] },
+
+    { id: 4, type: 'Single', mode: 'links',
+      name: { zh: '聆听者 (feat. GUMI)', en: 'The Listener (feat. GUMI)', ja: '聴く人 (feat. GUMI)' },
+      duration: 312, cover: 'docs/img/kiku-hito-listener.jpg',
+      links: [ { label: 'Bilibili', url: 'https://b23.tv/64i0Rah' } ] },
+
+    { id: 5, type: 'Single', mode: 'none',
+      name: { zh: '聆听者 (English ver.)', en: 'The Listener (English ver.)', ja: '聴く人 (English ver.)' },
+      duration: null, cover: 'docs/img/kiku-hito-listener.jpg' },
+
+    { id: 6, type: 'Single', mode: 'file',
+      name: { zh: '水上都市', en: 'Aquapolis', ja: 'アクアポリス' },
+      duration: null, musicUrl: 'docs/audio/aquapolis-preview.mp3', cover: '' },
+
+    { id: 7, type: 'Single', mode: 'file',
+      name: { zh: '余响行路', en: 'Keleuthos', ja: 'ケレウソス' },
+      duration: null, musicUrl: 'docs/audio/keleuthos-preview.mp3', cover: '' },
+
+    { id: 8, type: 'Single', mode: 'file',
+      name: { zh: '水上都市 (VIP mix)', en: 'Aquapolis (VIP mix)', ja: 'アクアポリス (VIP mix)' },
+      duration: null, musicUrl: 'docs/audio/aquapolis-vip-preview.mp3', cover: '' },
+
+    { id: 9, type: 'Single', mode: 'file',
+      name: { zh: '暮霭', en: 'Haze', ja: '夕靄' },
+      duration: null, musicUrl: 'docs/audio/haze-preview.mp3', cover: '' },
+
+    { id: 11, type: 'Single', mode: 'file',
+      name: '■■■■',
+      duration: null, musicUrl: 'docs/audio/wp7-2-preview.mp3', coverSeed: 17, coverNo: 11, coverLabelColor: '--c-black' },
+
+    { id: 10, type: 'Single', mode: 'file',
+      name: { zh: '第七水相观测记录', en: 'Observation Record: Aqueous Phase No. 7', ja: '第7水相観測記録' },
+      duration: null, musicUrl: 'docs/audio/observation-record-preview.mp3', coverSeed: 14, coverNo: 12 },
+
+    { id: 12, type: 'Single', mode: 'unknown',
+      name: '???',
+      duration: null, cover: 'docs/img/in-progress.png' },
   ];
 
+  const nameOf = m => typeof m.name === 'string'
+    ? m.name
+    : ((m.name && m.name[I18N.lang]) || (m.name && m.name.zh) || '');
   const pad2 = n => String(n).padStart(2, '0');
   const fmt = s => { s = Math.max(0, Math.floor(s || 0)); return `${Math.floor(s / 60)}:${pad2(s % 60)}`; };
   const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ------------------------------------------------------------------
-     占位封面：种子随机数 → 抽象几何（同一个 id 每次生成都一样）
-     颜色取自 style.css 的企划色板变量
+     占位封面：与作品详情共用 data.js 的 coverOf（同一个编号永远同一张图）
      ------------------------------------------------------------------ */
-  function mulberry32(seed) {
-    return () => {
-      seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
-      let r = Math.imul(seed ^ (seed >>> 15), 1 | seed);
-      r = (r + Math.imul(r ^ (r >>> 7), 61 | r)) ^ r;
-      return ((r ^ (r >>> 14)) >>> 0) / 4294967296;
-    };
-  }
-  const css = getComputedStyle(document.documentElement);
-  const PALETTE = ['--c-red', '--c-teal', '--c-olive', '--c-lavender', '--c-gray', '--c-black', '--c-white', '--c-text']
-    .map(v => css.getPropertyValue(v).trim()).filter(Boolean);
-  const coverCache = new Map();
-  function makeCover(seed) {
-    if (coverCache.has(seed)) return coverCache.get(seed);
-    const rnd = mulberry32(seed * 9973 + 17);
-    const pick = () => PALETTE[Math.floor(rnd() * PALETTE.length)];
-    const S = 640;
-    const cv = document.createElement('canvas');
-    cv.width = cv.height = S;
-    const g = cv.getContext('2d');
-    const bg = pick();
-    let fg = pick(); while (fg === bg) fg = pick();
-    let ac = pick(); while (ac === bg || ac === fg) ac = pick();
-    g.fillStyle = bg; g.fillRect(0, 0, S, S);
-
-    // 大色块：圆 / 半圆 / 斜切矩形三选一
-    g.fillStyle = fg;
-    const kind = Math.floor(rnd() * 3);
-    const cx = S * (0.25 + rnd() * 0.5), cy = S * (0.25 + rnd() * 0.5), r = S * (0.22 + rnd() * 0.22);
-    g.beginPath();
-    if (kind === 0) g.arc(cx, cy, r, 0, Math.PI * 2);
-    else if (kind === 1) g.arc(cx, cy, r, rnd() * Math.PI, rnd() * Math.PI + Math.PI);
-    else { g.save(); g.translate(cx, cy); g.rotate((rnd() - 0.5) * 1.2); g.rect(-r, -r * 0.6, r * 2, r * 1.2); g.restore(); }
-    g.fill();
-
-    // 同心细圈（呼应唱片纹路）
-    g.strokeStyle = ac; g.lineWidth = 1.5;
-    const rx = S * rnd(), ry = S * rnd(), rings = 4 + Math.floor(rnd() * 8);
-    for (let i = 1; i <= rings; i++) { g.beginPath(); g.arc(rx, ry, i * S * 0.035, 0, Math.PI * 2); g.stroke(); }
-
-    // 平行斜线
-    g.strokeStyle = fg; g.lineWidth = 2;
-    const ang = rnd() * Math.PI, n = 6 + Math.floor(rnd() * 10), gap = 10 + rnd() * 18;
-    const ox = S * rnd(), oy = S * rnd();
-    for (let i = 0; i < n; i++) {
-      const dx = Math.cos(ang) * S * 0.4, dy = Math.sin(ang) * S * 0.4;
-      const px = ox + Math.cos(ang + Math.PI / 2) * i * gap, py = oy + Math.sin(ang + Math.PI / 2) * i * gap;
-      g.beginPath(); g.moveTo(px - dx, py - dy); g.lineTo(px + dx, py + dy); g.stroke();
-    }
-
-    // 散点
-    g.fillStyle = ac;
-    for (let i = 0, m = 20 + Math.floor(rnd() * 40); i < m; i++) {
-      g.beginPath(); g.arc(S * rnd(), S * rnd(), 1 + rnd() * 3, 0, Math.PI * 2); g.fill();
-    }
-
-    // 右上角编号（左下角留给播放按钮）
-    g.fillStyle = fg;
-    g.font = `500 ${S * 0.05}px ${css.getPropertyValue('--font-latin')}`;
-    g.textAlign = 'right';
-    g.fillText(`No.${pad2(seed)}`, S * 0.94, S * 0.1);
-
-    const url = cv.toDataURL('image/png');
-    coverCache.set(seed, url);
-    return url;
-  }
-  const coverOf = m => m.cover || makeCover(m.id);
+  const coverOf = m => m.cover || window.LYRA_DATA.coverOf(m.coverSeed || m.id, m.coverNo, m.coverLabelColor);
 
   /* ------------------------------------------------------------------
-     播放引擎：统一接口 play / pause / seek / stop / onend + currentTime / duration
+     试听时长：从预览文件读取 metadata（只读取、不播放）
      ------------------------------------------------------------------ */
-  let ctx = null;                                  // AudioContext：第一次播放（用户点击）时才创建
+  const timeOf = m => m.duration ? fmt(m.duration) : (m.mode === 'file' ? '??:??' : '???');
+  /* TOTAL = 除 01 Aftertones / 05 English ver. 外所有已知时长之和 */
+  function updateTotal() {
+    const secs = MUSIC.filter(m => m.id !== 1 && m.id !== 5)
+      .reduce((s, m) => s + (m.duration || 0), 0);
+    $('#statTotal').textContent = secs ? fmt(secs) : '0:00';
+  }
+  function probeDurations() {
+    MUSIC.filter(m => m.mode === 'file' && !m.duration).forEach(m => {
+      const a = new Audio();
+      a.preload = 'metadata';
+      a.src = m.musicUrl;
+      a.addEventListener('loadedmetadata', () => {
+        if (Number.isFinite(a.duration) && a.duration > 0) {
+          m.duration = Math.round(a.duration);
+          const card = $(`#t${m.id}`);
+          if (card) card.querySelector('.album-time').textContent = timeOf(m);
+          updateTotal();
+        }
+      }, { once: true });
+    });
+  }
+
+  /* ------------------------------------------------------------------
+     链接弹窗：mode=links 的曲目点击试听后弹出官方收听链接
+     ------------------------------------------------------------------ */
+  function closeLinks() {
+    const modal = $('#linkModal');
+    if (modal) modal.classList.remove('is-open');
+  }
+  function openLinks(track) {
+    let modal = $('#linkModal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'linkModal';
+      modal.className = 'link-modal';
+      modal.innerHTML =
+        '<div class="link-modal-panel" role="dialog" aria-modal="true">' +
+          '<button type="button" class="link-modal-close" aria-label="Close">&times;</button>' +
+          '<span class="link-modal-kicker">LISTEN</span>' +
+          '<h3 class="link-modal-title"></h3>' +
+          '<div class="link-modal-links"></div>' +
+        '</div>';
+      document.body.appendChild(modal);
+      modal.addEventListener('click', e => {
+        if (e.target === modal || e.target.closest('.link-modal-close')) closeLinks();
+      });
+      document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLinks(); });
+    }
+    modal.querySelector('.link-modal-title').textContent = nameOf(track);
+    modal.querySelector('.link-modal-links').innerHTML = (track.links || []).map(l =>
+      `<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)}<i class="arrow" aria-hidden="true"></i></a>`
+    ).join('');
+    modal.classList.add('is-open');
+  }
+
+  /* ------------------------------------------------------------------
+     播放引擎：mode=file 用 HTMLAudioElement
+     ------------------------------------------------------------------ */
+  let ctx = null;
   async function getCtx() {
     if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
     if (ctx.state === 'suspended') await ctx.resume();
     return ctx;
   }
-
-  // 有 musicUrl：HTMLAudioElement
   function audioEngine(track) {
     const a = new Audio();
     a.preload = 'metadata';
     a.src = track.musicUrl;
     const eng = {
       onend: null,
-      get duration() { return Number.isFinite(a.duration) && a.duration > 0 ? a.duration : track.duration; },
+      get duration() { return Number.isFinite(a.duration) && a.duration > 0 ? a.duration : (track.duration || 1); },
       get currentTime() { return a.currentTime; },
       play: () => a.play(),
       pause: () => a.pause(),
@@ -133,96 +179,10 @@
     a.addEventListener('ended', () => eng.onend && eng.onend());
     return eng;
   }
-
-  // 没有 musicUrl：几个振荡器叠成和弦 → 低通滤波（慢速 LFO 扫频）→ 主音量淡入 / 淡出
-  function synthEngine(track) {
-    const rnd = mulberry32(track.id * 131 + 7);
-    const ROOTS = [110, 116.54, 123.47, 130.81, 146.83, 164.81];
-    const CHORDS = [[0, 7, 12, 16, 19], [0, 3, 7, 10, 14], [0, 5, 7, 12, 17], [0, 4, 9, 14, 16]];
-    const root = ROOTS[Math.floor(rnd() * ROOTS.length)];
-    const chord = CHORDS[Math.floor(rnd() * CHORDS.length)];
-    const cutoff = 500 + rnd() * 700;
-    const FADE_IN = 1.4, FADE_OUT = 0.45, LEVEL = 0.12;
-
-    let offset = 0;                                // 暂停时的位置
-    let startedAt = 0;                             // 本次开始播放时的 ctx.currentTime
-    let running = false;
-    let nodes = null;
-    let endTimer = 0;
-
-    function build(c) {
-      const master = c.createGain(); master.gain.value = 0;
-      const lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = cutoff; lp.Q.value = 0.7;
-      const lfo = c.createOscillator(); lfo.frequency.value = 0.06 + rnd() * 0.05;
-      const lfoAmt = c.createGain(); lfoAmt.gain.value = cutoff * 0.45;
-      lfo.connect(lfoAmt).connect(lp.frequency);
-      lp.connect(master).connect(c.destination);
-      const oscs = chord.map((semi, i) => {
-        const o = c.createOscillator();
-        o.type = i % 2 ? 'triangle' : 'sine';
-        o.frequency.value = root * Math.pow(2, semi / 12);
-        o.detune.value = (rnd() - 0.5) * 12;
-        const g = c.createGain(); g.gain.value = 1 / chord.length * (i === 0 ? 1.4 : 1);
-        o.connect(g).connect(lp);
-        return o;
-      });
-      [lfo, ...oscs].forEach(o => o.start());
-      return { master, oscs: [lfo, ...oscs] };
-    }
-    function release(n, c) {
-      const now = c.currentTime;
-      n.master.gain.cancelScheduledValues(now);
-      n.master.gain.setValueAtTime(n.master.gain.value, now);
-      n.master.gain.linearRampToValueAtTime(0, now + FADE_OUT);
-      n.oscs.forEach(o => o.stop(now + FADE_OUT + 0.05));
-    }
-    function scheduleEnd() {
-      clearTimeout(endTimer);
-      const left = track.duration - eng.currentTime;
-      endTimer = setTimeout(() => {
-        if (!running) return;
-        offset = track.duration;
-        running = false;
-        if (nodes) { release(nodes, ctx); nodes = null; }
-        eng.onend && eng.onend();
-      }, Math.max(0, left) * 1000);
-    }
-
-    const eng = {
-      onend: null,
-      get duration() { return track.duration; },
-      get currentTime() { return running ? Math.min(track.duration, offset + ctx.currentTime - startedAt) : offset; },
-      async play() {
-        if (running) return;
-        const c = await getCtx();
-        if (offset >= track.duration) offset = 0;
-        nodes = build(c);
-        const now = c.currentTime;
-        nodes.master.gain.setValueAtTime(0, now);
-        nodes.master.gain.linearRampToValueAtTime(LEVEL, now + FADE_IN);
-        startedAt = now;
-        running = true;
-        scheduleEnd();
-      },
-      pause() {
-        if (!running) return;
-        offset = eng.currentTime;
-        running = false;
-        clearTimeout(endTimer);
-        if (nodes) { release(nodes, ctx); nodes = null; }
-      },
-      seek(s) {
-        offset = clamp(s, 0, track.duration);
-        if (running) { startedAt = ctx.currentTime; scheduleEnd(); }
-      },
-      stop() { eng.pause(); offset = 0; },
-    };
-    return eng;
-  }
-  const createEngine = track => (track.musicUrl ? audioEngine(track) : synthEngine(track));
+  const createEngine = track => (track.musicUrl ? audioEngine(track) : null);
 
   /* ------------------------------------------------------------------
-     渲染：页头统计 + 专辑网格
+     渲染：页头统计 + 曲目网格
      ------------------------------------------------------------------ */
   const grid = $('#albumGrid');
   const ICONS = '<svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15L19.5 12z"/></svg>'
@@ -231,27 +191,33 @@
   function musicRender(list = MUSIC) {
     MUSIC = list;
     $('#statCount').textContent = pad2(list.length);
-    $('#statTotal').textContent = fmt(list.reduce((s, m) => s + (m.duration || 0), 0));
+    updateTotal();
     grid.innerHTML = list.map((m, i) => {
       const cover = coverOf(m);
+      // 试听按钮：none / unknown 无按钮；links / file 有按钮
+      const hasBtn = m.mode === 'links' || m.mode === 'file';
+      const btn = hasBtn ? `<button type="button" class="album-play" data-index="${i}">${ICONS}</button>` : '';
+      const listen = m.mode === 'unknown' ? '<span class="album-unknown">???</span>' : '';
+      const time = `<span class="album-time">${timeOf(m)}</span>`;
       return `
-      <li class="album" id="t${m.id}" data-index="${i}">
+      <li class="album mode-${m.mode}" id="t${m.id}" data-index="${i}">
         <div class="art">
           <div class="album-vinyl" aria-hidden="true">
             <div class="album-vinyl-face"><div class="album-label" style="background-image:url('${cover}')"></div></div>
           </div>
           <div class="album-cover"><img src="${cover}" alt="" loading="lazy"></div>
-          <button type="button" class="album-play" data-index="${i}">${ICONS}</button>
+          ${btn}${listen}
         </div>
         <div class="album-meta">
-          <div class="album-no">No.${pad2(i + 1)} — ${fmt(m.duration)}</div>
-          <h3 class="album-title"><span class="album-type">${m.type}</span><span class="album-sep" aria-hidden="true"></span><span>${m.musicName}</span></h3>
-          <p class="album-en">${m.musicNameEn}</p>
+          <div class="album-no">No.${pad2(i + 1)} — ${time}</div>
+          <h3 class="album-title"><span class="album-type">${esc(m.type)}</span><span class="album-sep" aria-hidden="true"></span><span>${esc(nameOf(m))}</span></h3>
+          <p class="album-en">${esc(m.name && m.name.en ? m.name.en : '')}</p>
         </div>
       </li>`;
     }).join('');
     cards = $$('.album', grid);
     syncCards();
+    probeDurations();
   }
   let cards = [];
 
@@ -261,7 +227,7 @@
   let index = -1;
   let engine = null;
   let playing = false;
-  let playToken = 0;                               // 防止快速连点时旧的 play() 晚到
+  let playToken = 0;
 
   function syncCards() {
     cards.forEach((el, i) => {
@@ -269,20 +235,21 @@
       el.classList.toggle('on', on);
       el.classList.toggle('is-playing', on && playing);
       const btn = el.querySelector('.album-play');
-      btn.setAttribute('aria-label', `${t(on && playing ? 'music.pause' : 'music.play')}: ${MUSIC[i].musicName}`);
-      btn.setAttribute('aria-pressed', on && playing ? 'true' : 'false');
+      if (btn) {
+        btn.setAttribute('aria-label', `${t(on && playing ? 'music.pause' : 'music.play')}: ${nameOf(MUSIC[i])}`);
+        btn.setAttribute('aria-pressed', on && playing ? 'true' : 'false');
+      }
     });
   }
 
   function changeMusicDetail(i, { autoplay = false, updateHash = true } = {}) {
     i = ((i % MUSIC.length) + MUSIC.length) % MUSIC.length;
     if (engine) { engine.onend = null; engine.stop(); }
+    engine = null;
     playToken++;
     playing = false;
     index = i;
     const song = MUSIC[i];
-    engine = createEngine(song);
-    engine.onend = () => changeMusicDetail(index + 1, { autoplay: true });   // 播完自动下一首（循环）
     if (updateHash) history.replaceState(null, '', `#t${song.id}`);
     syncCards();
     setBar();
@@ -290,6 +257,9 @@
   }
 
   async function play() {
+    const song = MUSIC[index];
+    if (!song || song.mode !== 'file' || playing) return;
+    if (!engine) engine = createEngine(song);
     if (!engine) return;
     const token = ++playToken;
     try {
@@ -300,6 +270,10 @@
     }
     if (token !== playToken) return;
     playing = true;
+    engine.onend = () => {
+      playing = false; syncCards(); setBar();
+      changeMusicDetail(index + 1, { autoplay: false });
+    };
     syncCards();
     setBar();
     peek();
@@ -313,16 +287,22 @@
     syncCards();
     setBar();
   }
-  // 点的是当前曲目 → 播放 / 暂停；别的曲目 → 切过去并自动播放
+
   function toggle(i) {
+    const song = MUSIC[i];
+    if (!song) return;
+    if (song.mode === 'links') { openLinks(song); return; }
+    if (song.mode !== 'file') return;                 // none / unknown 不响应
     if (i === index) (playing ? pause() : play());
     else changeMusicDetail(i, { autoplay: true });
   }
 
   grid.addEventListener('click', e => {
-    const art = e.target.closest('.art');
-    if (!art) return;
-    toggle(+art.closest('.album').dataset.index);
+    const card = e.target.closest('.album');
+    if (!card) return;
+    const btn = e.target.closest('.album-play');
+    if (!btn && !e.target.closest('.art')) return;
+    toggle(+card.dataset.index);
   });
 
   /* ------------------------------------------------------------------
@@ -343,7 +323,7 @@
     fill.style.width = `${r * 100}%`;
     thumb.style.left = `${r * 100}%`;
     curEl.textContent = fmt(time);
-    durEl.textContent = fmt(dur);
+    durEl.textContent = dur > 0 ? fmt(dur) : '??:??';
     const sec = Math.floor(time);
     if (sec !== lastAria) {
       lastAria = sec;
@@ -358,19 +338,17 @@
     if (!dragging) paint(engine.currentTime, engine.duration);
   }
 
-  // requestAnimationFrame 刷新进度；暂停时停
   let raf = 0;
   function startLoop() {
     if (raf) return;
     const step = () => {
       if (!playing) { raf = 0; return; }
-      if (!dragging) paint(engine.currentTime, engine.duration);
+      if (!dragging && engine) paint(engine.currentTime, engine.duration);
       raf = requestAnimationFrame(step);
     };
     raf = requestAnimationFrame(step);
   }
 
-  // 每次 play() 自动浮出一次，2.2 秒后收回
   let peekTimer = 0;
   function peek() {
     bar.classList.add('is-peek');
@@ -378,7 +356,6 @@
     peekTimer = setTimeout(() => bar.classList.remove('is-peek'), 2200);
   }
 
-  // 鼠标离窗口底部 110px 以内（忽略触摸）；鼠标离开页面时取消
   window.addEventListener('pointermove', e => {
     if (e.pointerType === 'touch') return;
     bar.classList.toggle('is-near', window.innerHeight - e.clientY <= 110);
@@ -386,7 +363,6 @@
   document.documentElement.addEventListener('mouseleave', () => bar.classList.remove('is-near'));
   window.addEventListener('blur', () => bar.classList.remove('is-near'));
 
-  // 拖动：pointer capture；拖动中只更新显示，松手才 seek
   const ratioAt = e => { const r = track.getBoundingClientRect(); return clamp((e.clientX - r.left) / r.width, 0, 1); };
   track.addEventListener('pointerdown', e => {
     if (!engine || e.button > 0) return;
@@ -407,13 +383,12 @@
     dragging = false;
     bar.classList.remove('is-drag');
     if (track.hasPointerCapture(e.pointerId)) track.releasePointerCapture(e.pointerId);
-    if (commit) engine.seek(dragRatio * engine.duration);
-    paint(engine.currentTime, engine.duration);
+    if (commit && engine) engine.seek(dragRatio * engine.duration);
+    if (engine) paint(engine.currentTime, engine.duration);
   };
   track.addEventListener('pointerup', endDrag(true));
   track.addEventListener('pointercancel', endDrag(false));
 
-  // 键盘：← → 快退 / 快进 5 秒
   track.addEventListener('keydown', e => {
     if (!engine) return;
     const d = { ArrowLeft: -5, ArrowRight: 5, ArrowDown: -5, ArrowUp: 5 }[e.key];
@@ -423,18 +398,17 @@
     paint(engine.currentTime, engine.duration);
   });
 
-  // 空格：播放 / 暂停（焦点在按钮或滑块上时交给它们自己）
   window.addEventListener('keydown', e => {
     if (e.key !== ' ' && e.code !== 'Space') return;
     const el = e.target;
     if (el.closest && el.closest('button, a, input, textarea, select, [role="slider"], [contenteditable="true"]')) return;
-    if (document.documentElement.classList.contains('is-locked')) return;   // 菜单打开中
+    if (document.documentElement.classList.contains('is-locked')) return;
     e.preventDefault();
     toggle(index);
   });
 
   /* ------------------------------------------------------------------
-     hash 路由：#t<id> 定位到某张专辑
+     hash 路由：#t<id> 定位到某张曲目
      ------------------------------------------------------------------ */
   const indexFromHash = () => {
     const m = /^#t(\d+)$/.exec(location.hash);
@@ -443,20 +417,25 @@
   window.addEventListener('hashchange', () => {
     const i = indexFromHash();
     if (i < 0 || i === index) return;
-    changeMusicDetail(i, { autoplay: playing });   // 正在播放就接着播新的那首
+    changeMusicDetail(i, { autoplay: false });
     cards[i].scrollIntoView({ block: 'center', behavior: reduceMotion ? 'auto' : 'smooth' });
   });
 
-  // 切换语言后更新按钮的 aria-label
-  document.addEventListener('lyra:lang', syncCards);
+  // 切换语言：曲名随语言重新渲染
+  document.addEventListener('lyra:lang', () => {
+    const keep = index;
+    musicRender(MUSIC);
+    index = keep;
+    syncCards();
+  });
 
   /* ---------- 启动 ---------- */
   musicRender(MUSIC);
   const start = indexFromHash();
-  // 只定位，不自动播放（浏览器要求第一次播放由用户触发）；没有 hash 时默认第一首，网址保持干净
-  changeMusicDetail(Math.max(0, start), { updateHash: start >= 0 });
+  // 没有指定曲目时不要默认选中第一首（Aftertones 无试听）：保持所有封面默认灰，
+  // 鼠标移上去才恢复彩色，与其他曲目一致。
+  if (start >= 0) changeMusicDetail(start, { updateHash: true });
 
-  // 之后接后端时：fetch(...).then(list => { musicRender(list); changeMusicDetail(0); })
   window.lyraMusic = {
     musicRender, changeMusicDetail, play, pause, toggle,
     get index() { return index; }, get playing() { return playing; },

@@ -18,9 +18,9 @@
   const NAV = [
     { id: 'home',    letter: '',  latin: 'HOME',    key: 'nav.home',    subs: [] },
     { id: 'news',    letter: 'A', latin: 'NEWS',    key: 'nav.news',    subs: ['news.sub1', 'news.sub2'] },
-    { id: 'works',   letter: 'B', latin: 'WORKS',   key: 'nav.works',   subs: ['works.sub1', 'works.sub2'] },
+    { id: 'works',   letter: 'B', latin: 'WORKS',   key: 'nav.works',   subs: ['works.nav1', 'works.nav2', 'works.nav3', 'works.nav4', 'works.nav5'] },
     { id: 'world',   letter: 'C', latin: 'WORLD',   key: 'nav.world',   subs: ['world.sub1', 'world.sub2', 'world.sub3'] },
-    { id: 'members', letter: 'D', latin: 'MEMBERS', key: 'nav.members', subs: ['members.sub1', 'members.sub2', 'members.sub3'] },
+    { id: 'members', letter: 'D', latin: 'MEMBERS', key: 'nav.members', subs: ['members.sub1', 'members.sub3'] },
     { id: 'about',   letter: 'E', latin: 'ABOUT',   key: 'nav.about',   subs: ['about.sub1', 'about.sub2'] },
   ];
   const HAS_PAGE = ['news', 'works', 'members'];   // 有独立子页的板块：菜单直接进子页

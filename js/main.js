@@ -6,6 +6,12 @@
 (() => {
   'use strict';
 
+  /* 手提箱动画：默认 v3（MG 残影划开）；?case=v1 旧版交叉绑带；?case=new / ?case=v2 翻盖版。三版均保留。 */
+  const caseParam = new URLSearchParams(location.search).get('case');
+  if (caseParam === 'v1') document.documentElement.dataset.caseMode = 'v1';
+  else if (caseParam === 'new' || caseParam === 'v2') document.documentElement.dataset.caseMode = 'v2';
+  else document.documentElement.dataset.caseMode = 'v3';
+
   /* ------------------------------------------------------------------
      配置
      ------------------------------------------------------------------ */
@@ -13,10 +19,11 @@
   const NAV = [
     { id: 'home',    letter: '',  latin: 'HOME',    key: 'nav.home',    subs: [] },
     { id: 'news',    letter: 'A', latin: 'NEWS',    key: 'nav.news',    subs: ['news.sub1', 'news.sub2'] },
-    { id: 'works',   letter: 'B', latin: 'WORKS',   key: 'nav.works',   subs: ['works.sub1', 'works.sub2'] },
+    { id: 'works',   letter: 'B', latin: 'WORKS',   key: 'nav.works',   subs: ['works.nav1', 'works.nav2', 'works.nav3', 'works.nav4', 'works.nav5'] },
     { id: 'world',   letter: 'C', latin: 'WORLD',   key: 'nav.world',   subs: ['world.sub1', 'world.sub2', 'world.sub3'] },
     { id: 'members', letter: 'D', latin: 'MEMBERS', key: 'nav.members', subs: ['members.sub1', 'members.sub2', 'members.sub3'] },
     { id: 'about',   letter: 'E', latin: 'ABOUT',   key: 'nav.about',   subs: ['about.sub1', 'about.sub2'] },
+    { id: 'deck',    letter: 'F', latin: 'DECK',    key: 'nav.deck',    subs: [] },
   ];
 
   // 唱片：每个板块一张（草图："切换一次目录就换一个唱片"）
@@ -32,6 +39,7 @@
     { id: 'members', img: 'assets/img/discs/d.webp',   color: '#4d6f9e', label: '#eaf0f8', ink: '#182636', text: 'D · MEMBERS' },
     { id: 'about',   img: 'assets/img/discs/e.webp',   free: true, scale: 1.15,
                      color: '#b95c4b', label: '#f9ebe7', ink: '#3a1d17', text: 'E · ABOUT' },
+    { id: 'deck',    color: '#1b1b1b', label: '#f2eee4', ink: '#f2eee4', text: 'F · DECK' },
   ];
 
   /* ---------- 动效参数 ---------- */
@@ -202,6 +210,8 @@
     const pad = n => String(n).padStart(2, '0');
     nowLetter.textContent = `${pad(slides.indexOf(page) + 1)} / ${pad(slides.length)}`;   // 参考站的 01 / 05 计数
     nowTitle.textContent  = titleOf(page);
+    // Gallery 是独立全屏层：通知它启停，并让页面进入沉浸模式（隐藏其余 UI）
+    document.dispatchEvent(new CustomEvent('lyra:page', { detail: { id: page.id } }));
   }
   function update() {
     ticking = false;
@@ -282,7 +292,20 @@
   const next = () => tryFlip(1);
   const prev = () => tryFlip(-1);
 
-  window.addEventListener('resize', () => goTo(index, { instant: true }));
+  /* ---------- 视口高度锁定：手机地址栏收起/展开会改变 dvh，导致每屏高度跳变、块面闪动。
+        用首次测到的高度固定 --app-h，只有宽度变化（横竖屏切换）才更新并重新定位。 ---------- */
+  let lockedW = window.innerWidth;
+  function lockAppHeight(force = false) {
+    const w = window.innerWidth;
+    if (!force && w === lockedW) return false;      // 只是高度变化（地址栏）→ 保持锁定，不重排
+    lockedW = w;
+    document.documentElement.style.setProperty('--app-h', window.innerHeight + 'px');
+    return true;
+  }
+  lockAppHeight(true);
+  window.addEventListener('resize', () => {
+    if (lockAppHeight()) goTo(index, { instant: true });   // 仅宽度变化才重定位
+  });
   window.addEventListener('hashchange', () => {
     const i = slides.findIndex(s => '#' + s.id === location.hash);
     if (i >= 0 && i !== index) goTo(i);
@@ -296,7 +319,11 @@
   // 板块内部（.page-inner）最近一次滚动的时间：刚滚到底时先别急着翻页
   let lastInnerT = 0;
   document.addEventListener('scroll', e => {
-    if (e.target !== document) { lastInnerT = performance.now(); refreshMore(); }
+    if (e.target !== document) {
+      lastInnerT = performance.now(); refreshMore();
+      const si = slides.findIndex(s => s.contains(e.target));
+      if (si >= 0) hideHint(si);                          // 用户真的在滚内容了：收起提示
+    }
   }, true);
   const innerJustScrolled = () => performance.now() - lastInnerT < 400;
 
@@ -308,6 +335,47 @@
   document.addEventListener('lyra:lang', refreshMore);
   window.addEventListener('load', refreshMore);
   setTimeout(refreshMore, 1200);                            // 淡入动画结束后再算一次
+
+  /* ---------- 内部滚动提示：可滚却迟迟没翻动时，竖排浮现"按住向下拖动"并闪烁 ---------- */
+  const hintEls = slides.map(s => {
+    const h = document.createElement('div');
+    h.className = 'drag-hint';
+    h.innerHTML = '<span data-i18n="hint.dragScroll"></span>';
+    s.appendChild(h);
+    return h;
+  });
+  if (window.LYRA_I18N) window.LYRA_I18N.apply(window.LYRA_I18N.lang, false);  // 让新插入的提示立即拿到文案
+  let hintTimers = new Map();            // slide -> timeout
+  let pageEnteredAt = performance.now(); // 进入当前板块的时间
+  function hideHint(i) {
+    const h = hintEls[i]; if (h) h.classList.remove('is-show');
+    const t = hintTimers.get(i); if (t) { clearTimeout(t); hintTimers.delete(i); }
+  }
+  function hideAllHints() { hintEls.forEach((_, i) => hideHint(i)); }
+  function scheduleHint(i, delay) {
+    const h = hintEls[i];
+    if (!h || h.classList.contains('is-show')) return;
+    const t = hintTimers.get(i); if (t) clearTimeout(t);
+    hintTimers.set(i, setTimeout(() => {
+      // 只有当前板块、仍可向下滚、且入场动画结束才显示
+      if (i === index && !introRunning && canScroll(innerOf(i), 1)) h.classList.add('is-show');
+    }, delay));
+  }
+  // 停留超过 5 秒：当前板块可滚就提示
+  setInterval(() => {
+    if (introRunning || menuOpen() || flying()) return;
+    const inner = innerOf(index);
+    if (canScroll(inner, 1)) scheduleHint(index, 0);
+  }, 5000);
+  // 记录进入板块时间（用于滚轮翻不动时判断"已停留一段时间"）
+  const _setCurrent = setCurrent;
+  setCurrent = function (page, dir) {
+    hideAllHints();
+    pageEnteredAt = performance.now();
+    return _setCurrent(page, dir);
+  };
+  // 滚轮事件里：若命中"内部还没滚完"这一支（用户想翻页却只滚了内容），也安排提示
+  const _wheelTipCheck = () => { if (canScroll(innerOf(index), 1)) scheduleHint(index, 900); };
 
   /* 滚轮：累计一次手势的滚动量 → 不到阈值只是橡皮筋（自己回位）；到阈值翻页 */
   let lastWheelT = 0, lastWheelD = 0;
@@ -331,6 +399,7 @@
 
     const inner = innerOf(index);
     if (!flying() && canScroll(inner, dir)) {                // 板块内容还没滚完：先滚内容
+      _wheelTipCheck();                                      // 用户想往下翻却只在滚内容：稍后提示可拖动
       if (inner.contains(e.target)) return;                  // 指针在内容上，交给原生滚动
       e.preventDefault();
       inner.scrollBy({ top: dy, behavior: 'smooth' });
@@ -578,10 +647,11 @@
     intro.classList.add('is-open');
     try { sessionStorage.setItem(INTRO_KEY, '1'); } catch (e) { /* ignore */ }
     setTimeout(update, 450);                      // 箱盖开到一半时，唱片弹出
+    const doneDelay = document.documentElement.dataset.caseMode === 'v3' ? 1650 : 1200;  // v3 残影最后一层延迟出场
     setTimeout(() => {
       intro.classList.add('is-done');
       introRunning = false;
-    }, 1200);
+    }, doneDelay);
   }
 
   goTo(startIndex, { instant: true });

@@ -17,6 +17,7 @@ window.LYRA_I18N = (() => {
       'ui.theme': '切换底色',
       'ui.lang': '语言',
       'ui.scroll': '向下滚动',
+      'hint.dragScroll': '按住向下拖动',
       'ui.intro.tip': '点击打开手提箱',
 
       'nav.home': '首页',
@@ -25,6 +26,7 @@ window.LYRA_I18N = (() => {
       'nav.world': '世界介绍',
       'nav.members': '成员构成',
       'nav.about': '关于我们',
+      'nav.deck': '企划书',
 
       'home.kicker': '音乐企划 · 建设中',
       'home.intro': '以原创音乐为核心，角色・世界观・影像交织的多媒体企划。',
@@ -38,10 +40,18 @@ window.LYRA_I18N = (() => {
 
       'works.sub1': '音乐 MV',
       'works.sub2': '专辑',
+      'works.nav1': '单曲',
+      'works.nav2': '曲绘',
+      'works.nav3': '角色与世界观',
+      'works.nav4': 'PV',
+      'works.nav5': '专辑',
       'works.lead': '每一首乐曲，都是世界的碎片，也是情感的记录。',
-      'works.video': 'MV 播放器占位',
+      'works.video': '',
+      'works.watchMV': '点击观看 MV',
+      'works.watch': '观看版本',
       'works.status.released': '已发布',
       'works.status.wip': '制作中',
+      'works.soon': '即将公开',
 
       'world.sub1': '世界观简述',
       'world.sub2': '故事背景',
@@ -55,15 +65,15 @@ window.LYRA_I18N = (() => {
       'members.sub1': '音乐',
       'members.sub2': '作词',
       'members.sub3': '美术',
-      'members.lead': '一个人做不到的事，一起来实现。',
-      'members.note': '此外，还有 20 名以上的长期协作成员。',
+      'members.lead': '一个人无法做到的事，我们一起实现。',
+      'members.note': '此外，还有 20 名以上的长期协作成员在籍，构建了持续稳定的制作体制。',
 
       'about.sub1': '各平台账号',
       'about.sub2': '联系方式',
-      'about.lead': '共鳴線是以原创音乐为核心，结合角色・视觉・世界观的多媒体企划。每一首乐曲作为独立作品存在，同时最终在一个统一的世界观中相互串联。',
+      'about.lead': '共鳴線是以原创音乐为核心，结合角色・视觉・世界观的多媒体企划。每首乐曲作为独立作品存在，最终织就世界的肌理。',
       'about.contactTitle': '联系我们',
       'about.contact': '合作相关请通过邮件联系。',
-      'about.emailNote': '（邮箱占位）',
+      'about.emailNote': '',
 
       'ui.backHome': '返回首页',
       'ui.all': '全部',
@@ -84,15 +94,23 @@ window.LYRA_I18N = (() => {
       'role.vocal': '演唱',
       'role.illust': '插画',
       'role.chara': '角色设计',
-      'role.video': '影像',
+      'role.video': 'PV',
       'role.mix': '混音',
       'role.plan': '企划・统筹',
+      'role.narration': '念白',
+      'role.writer': '写手',
+      'role.producer': '制作人・统筹',
+      'role.production': '制作统筹',
+      'role.design': '设计',
+      'role.artDir': '视觉指导',
+      'role.animation': '动画',
 
-      'music.sub': '影音 · 音乐作品',
+      'music.sub': '恭喜你，发现了未知的领域！部分歌曲目前还在制作中…敬请期待!',
       'music.play': '播放',
       'music.pause': '暂停',
       'music.seek': '播放进度',
       'music.listen': '试听全部作品',
+      'works.listenTrack': '试听此曲',
 
       'footer.line': '感谢你听到这里。',
       'footer.close': '合上手提箱',
@@ -110,6 +128,7 @@ window.LYRA_I18N = (() => {
       'ui.theme': 'Toggle background',
       'ui.lang': 'Language',
       'ui.scroll': 'Scroll',
+      'hint.dragScroll': 'Scroll to see more',
       'ui.intro.tip': 'Click to open the case',
 
       'nav.home': 'Home',
@@ -118,6 +137,7 @@ window.LYRA_I18N = (() => {
       'nav.world': 'World',
       'nav.members': 'Members',
       'nav.about': 'About',
+      'nav.deck': 'Pitch Deck',
 
       'home.kicker': 'Music project · under construction',
       'home.intro': 'A multimedia project built around original music, where characters, worldbuilding and film intersect.',
@@ -131,10 +151,18 @@ window.LYRA_I18N = (() => {
 
       'works.sub1': 'Music videos',
       'works.sub2': 'Albums',
+      'works.nav1': 'Single',
+      'works.nav2': 'Illustration',
+      'works.nav3': 'Character&World',
+      'works.nav4': 'PV',
+      'works.nav5': 'Albums',
       'works.lead': 'Each song is a fragment of the world, and a record of feeling.',
-      'works.video': 'MV player placeholder',
+      'works.video': '',
+      'works.watchMV': 'Watch the MV',
+      'works.watch': 'Watch versions',
       'works.status.released': 'Released',
       'works.status.wip': 'In progress',
+      'works.soon': 'Coming soon',
 
       'world.sub1': 'Overview',
       'world.sub2': 'Story',
@@ -149,14 +177,14 @@ window.LYRA_I18N = (() => {
       'members.sub2': 'Lyrics',
       'members.sub3': 'Art',
       'members.lead': 'What one cannot do alone, we do together.',
-      'members.note': 'Plus more than 20 long-term collaborators.',
+      'members.note': 'In addition, more than 20 long-term collaborating members are part of the team, sustaining a continuous production system.',
 
       'about.sub1': 'Platforms',
       'about.sub2': 'Contact',
       'about.lead': 'LyraLine is a multimedia project built around original music, combining characters, visuals and worldbuilding. Each song stands as an independent work, while all of them connect within one shared world.',
       'about.contactTitle': 'Contact',
       'about.contact': 'For partnership inquiries, please reach us by email.',
-      'about.emailNote': '(email placeholder)',
+      'about.emailNote': '',
 
       'ui.backHome': 'Back to top',
       'ui.all': 'All',
@@ -177,15 +205,23 @@ window.LYRA_I18N = (() => {
       'role.vocal': 'Vocal',
       'role.illust': 'Illustration',
       'role.chara': 'Character design',
-      'role.video': 'Video',
+      'role.video': 'PV',
       'role.mix': 'Mixing',
       'role.plan': 'Planning · Production',
+      'role.narration': 'Narration',
+      'role.writer': 'Writer',
+      'role.producer': 'Producer · Production Manager',
+      'role.production': 'Production Manager',
+      'role.design': 'Design',
+      'role.artDir': 'Art direction',
+      'role.animation': 'Animation',
 
-      'music.sub': 'Audio · Music works',
+      'music.sub': "Congratulations — you've discovered uncharted territory!<br>Some songs are still in production… stay tuned!",
       'music.play': 'Play',
       'music.pause': 'Pause',
       'music.seek': 'Playback position',
       'music.listen': 'Listen to all works',
+      'works.listenTrack': 'Listen to this track',
 
       'footer.line': 'Thank you for listening this far.',
       'footer.close': 'Closing the case',
@@ -203,6 +239,7 @@ window.LYRA_I18N = (() => {
       'ui.theme': '背景色を切り替え',
       'ui.lang': '言語',
       'ui.scroll': 'スクロール',
+      'hint.dragScroll': '押して下にスクロール',
       'ui.intro.tip': 'クリックでケースを開く',
 
       'nav.home': 'トップ',
@@ -211,6 +248,7 @@ window.LYRA_I18N = (() => {
       'nav.world': '世界観',
       'nav.members': 'メンバー',
       'nav.about': '私たちについて',
+      'nav.deck': '企画書',
 
       'home.kicker': '音楽プロジェクト · 制作中',
       'home.intro': 'オリジナル音楽を核に、キャラクター・世界観・映像が交差するマルチメディアプロジェクト。',
@@ -224,10 +262,18 @@ window.LYRA_I18N = (() => {
 
       'works.sub1': 'ミュージックビデオ',
       'works.sub2': 'アルバム',
+      'works.nav1': 'シングル',
+      'works.nav2': 'イラスト',
+      'works.nav3': 'キャラクター＆世界観',
+      'works.nav4': 'PV',
+      'works.nav5': 'アルバム',
       'works.lead': 'それぞれの楽曲は、世界の断片であり、感情の記録です。',
-      'works.video': 'MVプレイヤー（仮）',
+      'works.video': '',
+      'works.watchMV': 'MVを見る',
+      'works.watch': '視聴バージョン',
       'works.status.released': '公開済み',
       'works.status.wip': '制作中',
+      'works.soon': '近日公開',
 
       'world.sub1': '世界観',
       'world.sub2': '物語の背景',
@@ -242,14 +288,14 @@ window.LYRA_I18N = (() => {
       'members.sub2': '作詞',
       'members.sub3': '美術',
       'members.lead': '一人ではできないことを、共に実現する。',
-      'members.note': 'また、長期的に協力するメンバーが20名以上在籍しています。',
+      'members.note': 'また、長期的に協力するメンバーが20名以上在籍しており、継続的な制作体制を構築しています。',
 
       'about.sub1': '各プラットフォーム',
       'about.sub2': 'お問い合わせ',
-      'about.lead': '共鳴線は、オリジナル楽曲を核に、キャラクター・ビジュアル・世界観を組み合わせたマルチメディア企画です。楽曲一つ一つを独立した作品として成立させながら、ひとつの世界観の中で連なっていく構造を目指しています。',
+      'about.lead': '共鳴線は、オリジナル楽曲を核に、キャラクター・ビジュアル・世界観を組み合わせたマルチメディア企画です。楽曲一つ一つを独立した作品として成立させ、最終的に世界の肌理を織りなします。',
       'about.contactTitle': 'お問い合わせ',
       'about.contact': '協業に関するご相談は、メールにてご連絡ください。',
-      'about.emailNote': '（メールアドレス仮）',
+      'about.emailNote': '',
 
       'ui.backHome': 'トップへ戻る',
       'ui.all': 'すべて',
@@ -270,15 +316,23 @@ window.LYRA_I18N = (() => {
       'role.vocal': '歌唱',
       'role.illust': 'イラスト',
       'role.chara': 'キャラクターデザイン',
-      'role.video': '映像',
+      'role.video': 'PV',
       'role.mix': 'ミックス',
       'role.plan': '企画・マネジメント',
+      'role.narration': 'ナレーション',
+      'role.writer': '脚本',
+      'role.producer': 'プロデューサー・制作統括',
+      'role.production': '制作統括',
+      'role.design': 'デザイン',
+      'role.artDir': 'アートディレクション',
+      'role.animation': 'アニメーション',
 
-      'music.sub': '映像音楽 · 音楽作品',
+      'music.sub': 'おめでとうございます！未踏の領域を発見しました。現在制作中の曲もあります…お楽しみに！',
       'music.play': '再生',
       'music.pause': '一時停止',
       'music.seek': '再生位置',
       'music.listen': '全作品を試聴する',
+      'works.listenTrack': 'この曲を試聴する',
 
       'footer.line': 'ここまで聴いてくれてありがとう。',
       'footer.close': 'ケースを閉じる',
@@ -288,22 +342,19 @@ window.LYRA_I18N = (() => {
   };
 
   const htmlLang = { zh: 'zh-CN', en: 'en', ja: 'ja' };
-  const STORE = 'lyra.lang';
-  let current = 'zh';
+  const STORE = 'lyra.lang.v2';   // 换 key 让旧的语言缓存失效，确保默认日语
+  let current = 'ja';
 
   const store = {
     get() { try { return localStorage.getItem(STORE); } catch (e) { return null; } },
     set(v) { try { localStorage.setItem(STORE, v); } catch (e) { /* 隐私模式等 */ } },
   };
 
-  /* 顺序：用户手动选过的 → 浏览器语言 → 英文 */
+  /* 顺序：用户手动选过的 → 默认日语 */
   function detect() {
     const saved = store.get();
     if (saved && dict[saved]) return saved;
-    const n = (navigator.language || 'en').toLowerCase();
-    if (n.startsWith('ja')) return 'ja';
-    if (n.startsWith('zh')) return 'zh';
-    return 'en';
+    return 'ja';   // 站点默认语言为日语
   }
 
   function t(key, lang) {

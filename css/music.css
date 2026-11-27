@@ -15,7 +15,7 @@
   gap: 24px 48px; margin-bottom: clamp(48px, 7vw, 96px);
 }
 .music-head-sub { margin-top: 18px; font-size: 13px; letter-spacing: .2em; color: var(--muted); }
-.music-stats { display: flex; gap: clamp(28px, 4vw, 64px); }
+.music-stats { display: flex; gap: clamp(28px, 4vw, 64px); margin-left: auto; flex-shrink: 0; }
 .music-stats > div { display: flex; flex-direction: row-reverse; align-items: baseline; gap: 10px; }   /* 视觉上 数字在前：09 WORKS */
 .music-stats dd {
   font-family: var(--font-latin); font-weight: 300; font-variant-numeric: tabular-nums;
@@ -95,8 +95,9 @@
 }
 
 /* 状态：hover → 封面恢复彩色 + 唱片滑出；当前曲目 .on → 唱片保持滑出、封面左让；播放中 → 唱片旋转 */
-.album .art:hover .album-cover, .album.on .album-cover { filter: none; }
-.album .art:hover .album-vinyl, .album.on .album-vinyl { transform: translateX(30%); }
+/* 整张卡片都能触发，避免只在封面方块内 hover 时看不到低饱和封面的变化 */
+.album:hover .album-cover, .album.on .album-cover { filter: none; }
+.album:hover .album-vinyl, .album.on .album-vinyl { transform: translateX(30%); }
 .album.on .album-cover { transform: translateX(-5%); }
 .album.is-playing .album-vinyl-face { animation-play-state: running; }
 
@@ -157,3 +158,60 @@
   .album-vinyl-face { animation: none; }
   .album-vinyl, .album-cover, .album-play, .mbar, .mbar-thumb { transition: none; }   /* 状态照常切换，只是没有过渡 */
 }
+
+/* =====================================================================
+   曲目试听弹窗（绿浮游 / 聆听者：点击试听后弹出官方收听链接）
+   ===================================================================== */
+.link-modal {
+  position: fixed; inset: 0; z-index: 80;
+  display: grid; place-items: center; padding: 24px;
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
+  backdrop-filter: blur(8px);
+  opacity: 0; pointer-events: none; transition: opacity .3s;
+}
+.link-modal.is-open { opacity: 1; pointer-events: auto; }
+.link-modal-panel {
+  position: relative; width: min(440px, 100%);
+  background: var(--bg-2); border: 1px solid var(--line);
+  padding: clamp(28px, 5vw, 46px);
+  transform: translateY(14px); transition: transform .35s var(--ease-out);
+}
+.link-modal.is-open .link-modal-panel { transform: none; }
+.link-modal-close {
+  position: absolute; top: 12px; right: 14px;
+  border: 0; background: transparent; color: var(--muted);
+  font-size: 26px; line-height: 1; cursor: pointer; padding: 4px 8px;
+}
+.link-modal-close:hover { color: var(--ink); }
+.link-modal-kicker {
+  font-family: var(--font-latin); font-size: 11px; letter-spacing: .28em; color: var(--accent);
+}
+.link-modal-title {
+  font-family: var(--font-ja); font-weight: 700; font-size: clamp(18px, 2vw, 24px);
+  line-height: 1.5; letter-spacing: .04em; margin: 12px 0 26px;
+}
+html[lang="zh-CN"] .link-modal-title { font-family: var(--font-zh); }
+.link-modal-links { display: flex; flex-direction: column; gap: 10px; }
+.link-modal-links a {
+  display: flex; align-items: center; justify-content: space-between;
+  border: 1px solid var(--line); padding: 15px 18px;
+  font-family: var(--font-latin); font-size: 14px; letter-spacing: .08em;
+  color: var(--ink); transition: background .25s, color .25s, border-color .25s;
+}
+.link-modal-links a:hover { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.link-modal-links .arrow { display: inline-block; width: 7px; height: 7px; border-top: 1.5px solid currentColor; border-right: 1.5px solid currentColor; transform: rotate(45deg); }
+
+/* mode=unknown：试听位置显示 ??? 占位 */
+.album.mode-unknown .album-play { display: none; }
+.album-unknown {
+  position: absolute; left: 14px; bottom: 14px; z-index: 2;
+  width: 52px; height: 52px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--bg-2); color: var(--muted);
+  font-family: var(--font-latin); font-size: 15px; letter-spacing: .04em;
+  box-shadow: 0 0 0 2px var(--bg);
+}
+.album.mode-none .album-play { display: none; }
+.album.mode-none .art { cursor: default; }
+.album.mode-unknown .art { cursor: default; }
+.album-time { font-variant-numeric: tabular-nums; }
