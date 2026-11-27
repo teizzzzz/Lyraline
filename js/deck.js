@@ -25,7 +25,7 @@ window.LYRA_DECK = (() => {
         en: 'An original music × world-building project',
       },
       foot: { ja: '2026 · 企画書', zh: '2026 · 企划书', en: '2026 · Proposal' },
-      img: 'docs/img/standingpose-cutout.png',
+      img: 'docs/img/standingpose-cutout.webp',
     },
 
     /* 02 企划性质 */
@@ -150,7 +150,7 @@ window.LYRA_DECK = (() => {
           '作为一个不具备固定性别与身份背景的存在，WP-7 为观众提供了一个开放的情感投射空间。',
         ],
       },
-      img: 'docs/img/WP7FullBodyTransparentBG.png', imgSide: 'right',
+      img: 'docs/img/WP7FullBodyTransparentBG.webp', imgSide: 'right',
     },
 
     /* 09 角色引文 */

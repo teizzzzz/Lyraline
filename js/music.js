@@ -26,7 +26,7 @@
   let MUSIC = [
     { id: 1, type: 'EP', mode: 'none',
       name: { zh: 'Aftertones', en: 'Aftertones', ja: 'Aftertones' },
-      duration: null, cover: 'docs/img/aftertones-cover.jpg' },
+      duration: null, cover: 'docs/img/aftertones-cover.webp' },
 
     { id: 2, type: 'Single', mode: 'links',
       name: { zh: '绿浮游 (feat. 初音ミク, ナースロボ_タイプT)', en: 'Verdant Ephemera (feat. Hatsune Miku, Nourse Robot Type T)', ja: '緑浮遊 (feat. 初音ミク, ナースロボ_タイプT)' },
@@ -46,12 +46,12 @@
 
     { id: 4, type: 'Single', mode: 'links',
       name: { zh: '聆听者 (feat. GUMI)', en: 'The Listener (feat. GUMI)', ja: '聴く人 (feat. GUMI)' },
-      duration: 312, cover: 'docs/img/kiku-hito-listener.jpg',
+      duration: 312, cover: 'docs/img/kiku-hito-listener.webp',
       links: [ { label: 'Bilibili', url: 'https://b23.tv/64i0Rah' } ] },
 
     { id: 5, type: 'Single', mode: 'none',
       name: { zh: '聆听者 (English ver.)', en: 'The Listener (English ver.)', ja: '聴く人 (English ver.)' },
-      duration: null, cover: 'docs/img/kiku-hito-listener.jpg' },
+      duration: null, cover: 'docs/img/kiku-hito-listener.webp' },
 
     { id: 6, type: 'Single', mode: 'file',
       name: { zh: '水上都市', en: 'Aquapolis', ja: 'アクアポリス' },

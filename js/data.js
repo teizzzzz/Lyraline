@@ -60,14 +60,14 @@ window.LYRA_DATA = (() => {
   const zxFullImages = [
     'docs/img/ZX/ZX1a189112e0c472d0196970a4de2c8402e3690980697966859.jpg@1052w_!web-dynamic.webp',
     'docs/img/ZX/ZX20dda9ae654f2ffd8e99c2d1b4046568e3690980697966859.jpg@1052w_!web-dynamic.avif',
-    'docs/img/ZX/ZX3.jpg',
-    'docs/img/ZX/ZX6.jpg',
+    'docs/img/ZX/ZX3.webp',
+    'docs/img/ZX/ZX6.webp',
   ].map(src => `<p class="prose-img"><img src="${src}" alt=""></p>`).join('');
   const zxGridImages = [
     'docs/img/ZX/ZX4.5ed4d42e436f2820d762d83a8b8aade3690980697966859.jpg@1052w_!web-dynamic.avif',
-    'docs/img/ZX/ZX5.jpg',
-    'docs/img/ZX/ZX4.jpg',
-    'docs/img/ZX/ZX7.jpg',
+    'docs/img/ZX/ZX5.webp',
+    'docs/img/ZX/ZX4.webp',
+    'docs/img/ZX/ZX7.webp',
   ];
 
   /* ---------------- 新闻 ----------------
@@ -128,11 +128,11 @@ window.LYRA_DATA = (() => {
       },
       body: {
         zh: '<p>预计参加明年的 M3 2027 展会，展期暂定为 4 月 26 日。</p><p>以下图片为制品预览，更多情报将于日后陆续发布。</p>' +
-          '<p class="prose-img"><img src="docs/img/m3-2027-01-case.jpg" alt=""></p><p class="prose-img"><img src="docs/img/m3-2027-02-sticker.jpg" alt=""></p><p class="prose-img"><img src="docs/img/m3-2027-03-postcard.jpg" alt=""></p><p class="prose-img"><img src="docs/img/m3-2027-04-standee.jpg" alt=""></p><p class="prose-img"><img src="docs/img/m3-2027-05-cd-booklet.jpg" alt=""></p><p class="prose-img"><img src="docs/img/m3-2027-06-badge.jpg" alt=""></p>',
+          '<p class="prose-img"><img src="docs/img/m3-2027-01-case.webp" alt=""></p><p class="prose-img"><img src="docs/img/m3-2027-02-sticker.webp" alt=""></p><p class="prose-img"><img src="docs/img/m3-2027-03-postcard.jpg" alt=""></p><p class="prose-img"><img src="docs/img/m3-2027-04-standee.webp" alt=""></p><p class="prose-img"><img src="docs/img/m3-2027-05-cd-booklet.webp" alt=""></p><p class="prose-img"><img src="docs/img/m3-2027-06-badge.webp" alt=""></p>',
         en: '<p>We are scheduled to appear at M3 2027 next year, tentatively on April 26.</p><p>The images below offer a preview of our merchandise; further information will be released in due course.</p>' +
-          '<p class="prose-img"><img src="docs/img/m3-2027-01-case.jpg" alt=""></p><p class="prose-img"><img src="docs/img/m3-2027-02-sticker.jpg" alt=""></p><p class="prose-img"><img src="docs/img/m3-2027-03-postcard.jpg" alt=""></p><p class="prose-img"><img src="docs/img/m3-2027-04-standee.jpg" alt=""></p><p class="prose-img"><img src="docs/img/m3-2027-05-cd-booklet.jpg" alt=""></p><p class="prose-img"><img src="docs/img/m3-2027-06-badge.jpg" alt=""></p>',
+          '<p class="prose-img"><img src="docs/img/m3-2027-01-case.webp" alt=""></p><p class="prose-img"><img src="docs/img/m3-2027-02-sticker.webp" alt=""></p><p class="prose-img"><img src="docs/img/m3-2027-03-postcard.jpg" alt=""></p><p class="prose-img"><img src="docs/img/m3-2027-04-standee.webp" alt=""></p><p class="prose-img"><img src="docs/img/m3-2027-05-cd-booklet.webp" alt=""></p><p class="prose-img"><img src="docs/img/m3-2027-06-badge.webp" alt=""></p>',
         ja: '<p>翌年のM3 2027への出展を予定しており、開催日は4月26日の見込みです。</p><p>以下は製品のプレビューとなります。詳細は順次公開してまいります。</p>' +
-          '<p class="prose-img"><img src="docs/img/m3-2027-01-case.jpg" alt=""></p><p class="prose-img"><img src="docs/img/m3-2027-02-sticker.jpg" alt=""></p><p class="prose-img"><img src="docs/img/m3-2027-03-postcard.jpg" alt=""></p><p class="prose-img"><img src="docs/img/m3-2027-04-standee.jpg" alt=""></p><p class="prose-img"><img src="docs/img/m3-2027-05-cd-booklet.jpg" alt=""></p><p class="prose-img"><img src="docs/img/m3-2027-06-badge.jpg" alt=""></p>',
+          '<p class="prose-img"><img src="docs/img/m3-2027-01-case.webp" alt=""></p><p class="prose-img"><img src="docs/img/m3-2027-02-sticker.webp" alt=""></p><p class="prose-img"><img src="docs/img/m3-2027-03-postcard.jpg" alt=""></p><p class="prose-img"><img src="docs/img/m3-2027-04-standee.webp" alt=""></p><p class="prose-img"><img src="docs/img/m3-2027-05-cd-booklet.webp" alt=""></p><p class="prose-img"><img src="docs/img/m3-2027-06-badge.webp" alt=""></p>',
       },
     },
     {
@@ -279,7 +279,7 @@ window.LYRA_DATA = (() => {
       date: '2026.07.25',
       title: { zh: '聆听者（feat. GUMI）', en: 'The Listener (feat. GUMI)', ja: '聴く人(feat.GUMI)' },
       kicker: 'Second Single · MV',
-      cover: 'docs/img/kiku-hito-listener.jpg',
+      cover: 'docs/img/kiku-hito-listener.webp',
       videoLink: 'https://www.bilibili.com/video/BV1FEge6sE6e/?spm_id_from=333.337.search-card.all.click&vd_source=50f1e32f435debdc401462b1242b5891',
       bilibili: '',
       youtube: '',
@@ -309,7 +309,7 @@ window.LYRA_DATA = (() => {
       date: 'TBA',
       title: { zh: 'Aftertones', en: 'Aftertones', ja: 'Aftertones' },
       kicker: '1st Album',
-      cover: 'docs/img/aftertones-cover.jpg',
+      cover: 'docs/img/aftertones-cover.webp',
       line: {
         zh: '首张专辑《Aftertones》，预计于 M3 2027 展会发售。',
         en: 'The debut album Aftertones, scheduled for release at M3 2027.',
@@ -322,7 +322,7 @@ window.LYRA_DATA = (() => {
       tracks: [
         { title: { zh: '绿浮游 (feat. 初音ミク, ナースロボ_タイプT)', en: 'Verdant Ephemera (feat. Hatsune Miku, Nourse Robot Type T)', ja: '緑浮遊 (feat. 初音ミク, ナースロボ_タイプT)' }, cover: 'docs/img/First%20Song%20Cover.JPG', status: 'released', time: '—' },
         { title: { zh: '绿浮游【人声本家】', en: 'Verdant Ephemera (feat. 常夜謠)', ja: '緑浮遊(feat. 常夜謠)' }, cover: 'docs/img/First%20Song%20Cover.JPG', status: 'released', time: '—' },
-        { title: { zh: '聆听者 (English ver.)', en: 'The Listener (English ver.)', ja: '聴く人 (English ver.)' }, cover: 'docs/img/kiku-hito-listener.jpg', status: 'wip', time: '—' },
+        { title: { zh: '聆听者 (English ver.)', en: 'The Listener (English ver.)', ja: '聴く人 (English ver.)' }, cover: 'docs/img/kiku-hito-listener.webp', status: 'wip', time: '—' },
         { title: '■■■■', coverSeed: 17, coverNo: 11, coverLabelColor: '--c-black', status: 'wip', time: '—' },
         { title: { zh: '水上都市', en: 'Aquapolis', ja: 'アクアポリス' }, coverSeed: 6, status: 'wip', time: '—' },
         { title: { zh: '余响行路', en: 'Keleuthos', ja: 'ケレウソス' }, coverSeed: 7, status: 'wip', time: '—' },
@@ -343,7 +343,7 @@ window.LYRA_DATA = (() => {
     {
       id: 'listener-en', no: '04', type: 'single', status: 'wip', date: 'TBA',
       title: { zh: '聆听者 (English ver.)', en: 'The Listener (English ver.)', ja: '聴く人 (English ver.)' },
-      kicker: 'Second Single · English ver.', cover: 'docs/img/kiku-hito-listener.jpg', musicId: 5,
+      kicker: 'Second Single · English ver.', cover: 'docs/img/kiku-hito-listener.webp', musicId: 5,
       line: {
         zh: 'The only shred of sound the world remembers',
         en: 'The only shred of sound the world remembers',
@@ -453,7 +453,7 @@ window.LYRA_DATA = (() => {
   const members = [
     {
       id: 'toyoya', name: '常夜 謠', group: 'music', roles: ['producer', 'vocal'], color: 'var(--c-red)',
-      avatar: 'docs/img/members/toyoya-avatar.jpg',
+      avatar: 'docs/img/members/toyoya-avatar.webp',
       bio: {
         zh: '<span data-age="2006"></span>岁。「共鸣线」主催、企划及 Vocal。正在进行唱见活动。<br>上海戏剧学院、上海交通大学音乐学专业在读，曾参与 Vocaduo 等活动。希望创作出能够长期留在人们心中的作品与世界，让音乐成为能够陪伴人与时间共同延续的体验。',
         en: '<span data-age="2006"></span> years old, utaite. Founder, PM and Vocal of LyraLine.<br>Majoring in theatre and musicology.<br>Taken part in projects such as Vocaduo.',
@@ -474,9 +474,9 @@ window.LYRA_DATA = (() => {
         ja: 'イラストレーター兼デザイナー。音楽とコーヒー、そしてエビが好き。<br>「純粋さと本質を残し、キャラクターがひとつの存在として自立すること」を大切にしながら、愛するものを解釈し、表現している。',
       },
       gallery: [
-        'docs/img/members/shuuyakikou-work-1.jpg', 'docs/img/members/shuuyakikou-work-2.jpg',
+        'docs/img/members/shuuyakikou-work-1.webp', 'docs/img/members/shuuyakikou-work-2.jpg',
         'docs/img/members/shuuyakikou-work-3.jpg', 'docs/img/members/shuuyakikou-work-4.jpg',
-        'docs/img/members/shuuyakikou-work-5.jpg', 'docs/img/members/shuuyakikou-work-6.jpg',
+        'docs/img/members/shuuyakikou-work-5.webp', 'docs/img/members/shuuyakikou-work-6.webp',
       ],
       links: [{ label: 'X', url: 'https://x.com/shuuya_kikou?s=11' }],
     },
@@ -500,7 +500,7 @@ window.LYRA_DATA = (() => {
     },
     {
       id: 'semi', name: 'Semi', group: 'production', roles: ['animation', 'illust'], color: 'var(--c-text)',
-      avatar: 'docs/img/members/semi-avatar.jpg',
+      avatar: 'docs/img/members/semi-avatar.webp',
       bio: {
         zh: '毕业于谢尔丹动画系。动画师，负责背景绘制与动画制作。希望做出能连接人与人情感的温暖作品。曾参与 YouTube 动画《The Last Hand》的场景、动画和后期制作。',
         en: 'A graduate of Sheridan College\'s Animation Program.<br>Working as an animator on backgrounds and animation, with the hope of making warm stories that connect people\'s emotions. Contributed to the setting, animation and post-production of the YouTube animation "The Last Hand."',
@@ -522,7 +522,7 @@ window.LYRA_DATA = (() => {
     },
     {
       id: 'peydarg', name: 'Peydarg', group: 'music', roles: ['compose', 'arrange', 'production'], color: 'var(--c-olive)',
-      avatar: 'docs/img/members/peydarg-avatar.jpg',
+      avatar: 'docs/img/members/peydarg-avatar.webp',
       bio: {
         zh: '<span data-age="2006"></span>岁，电子音乐制作人。承担了近十款独立游戏的音乐音效开发工作，在 GGJ25 比赛中获北京站音乐音效第二名。单曲《Memory Overload》已被收录至独立音乐游戏《弥赛亚症候群》。音乐曾在 PHONO RECORDS（留声唱片）、Hertz Records 和 ETR Records 等厂牌发行，所创作的配乐被 CCTV7 频道舞台剧采用。喜欢通过叠加大量电子音色，为听众带来更丰富刺激的听觉体验。',
         en: '<span data-age="2006"></span> years old, electronic music producer. Composed music and sound effects for nearly ten indie games; placed second in music and sound design at the Beijing round of GGJ25.<br>Single "Memory Overload" appears in the indie rhythm game "Messiah Syndrome"; music released through labels such as PHONO RECORDS, Hertz Records and ETR Records. Favoring dense stacks of electronic textures to give listeners a richer, more exhilarating experience.',
